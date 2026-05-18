@@ -1,0 +1,2265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garak Config Builder - LLM Vulnerability Scanner</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border: #30363d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent: #238636;
+            --accent-hover: #2ea043;
+            --blue: #58a6ff;
+            --orange: #f0883e;
+            --red: #f85149;
+            --purple: #a371f7;
+            --cyan: #56d4dd;
+            --yellow: #d29922;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1600px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { color: var(--accent); font-size: 2rem; margin-bottom: 8px; }
+        header p { color: var(--text-secondary); }
+        .badges { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+        .badge { background: var(--bg-tertiary); border: 1px solid var(--border); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; }
+        .badge.nvidia { border-color: var(--accent); color: var(--accent); }
+        .main-grid { display: grid; grid-template-columns: 1fr 450px; gap: 20px; }
+        @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
+        .card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+        .card-title { font-size: 1.1rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .card-title .icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .steps { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+        .step-btn { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .step-btn:hover { border-color: var(--accent); }
+        .step-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+        .step-btn.completed { border-color: var(--accent); color: var(--accent); }
+        .step-num { width: 20px; height: 20px; border-radius: 50%; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+        .step-btn.active .step-num { background: rgba(255,255,255,0.2); color: white; }
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+        label { display: block; color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 6px; }
+        label.required::after { content: ' *'; color: var(--red); }
+        select, input[type="text"], input[type="number"], textarea {
+            width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary);
+            padding: 10px 12px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 16px;
+        }
+        select:focus, input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+        textarea { min-height: 120px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical; }
+        .btn { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+        .btn:hover { background: var(--accent-hover); }
+        .btn-secondary { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); }
+        .btn-secondary:hover { background: var(--border); }
+        .btn-danger { background: var(--red); }
+        .btn-danger:hover { background: #da3633; }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+        .btn-group { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        @media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+        .info-box { background: rgba(88, 166, 255, 0.1); border: 1px solid var(--blue); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
+        .info-box.warning { background: rgba(240, 136, 62, 0.1); border-color: var(--orange); }
+        .info-box.success { background: rgba(35, 134, 54, 0.1); border-color: var(--accent); }
+        .info-box.purple { background: rgba(163, 113, 247, 0.1); border-color: var(--purple); }
+        .info-box.danger { background: rgba(248, 81, 73, 0.1); border-color: var(--red); }
+        .info-box h4 { color: var(--blue); font-size: 0.9rem; margin-bottom: 6px; }
+        .info-box.warning h4 { color: var(--orange); }
+        .info-box.success h4 { color: var(--accent); }
+        .info-box.purple h4 { color: var(--purple); }
+        .info-box.danger h4 { color: var(--red); }
+        .info-box p, .info-box ul, .info-box ol { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
+        .info-box ul, .info-box ol { padding-left: 20px; margin-top: 8px; }
+        .info-box code { background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; color: var(--cyan); }
+        .preview-panel { position: sticky; top: 20px; }
+        .preview-panel h3 { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+        .preview-panel h3::before { content: '⚡'; }
+        .preview-section { margin-bottom: 20px; }
+        .preview-section h4 { color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .preview-section .copy-btn { background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+        .preview-section .copy-btn:hover { background: var(--border); color: var(--text-primary); }
+        .code-block { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.8rem; overflow-x: auto; white-space: pre-wrap; word-break: break-all; max-height: 200px; overflow-y: auto; }
+        .yaml-block { max-height: 400px; }
+        .scenario-card { background: var(--bg-tertiary); border: 2px solid var(--border); border-radius: 10px; padding: 14px; cursor: pointer; transition: all 0.2s; }
+        .scenario-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .scenario-card.selected { border-color: var(--accent); background: rgba(35, 134, 54, 0.15); }
+        .scenario-card .scenario-icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .scenario-card .scenario-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+        .scenario-card .scenario-desc { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; }
+        .scenario-card .scenario-probes { font-size: 0.7rem; color: var(--purple); margin-top: 8px; }
+        .probe-chip { display: inline-flex; align-items: center; gap: 4px; background: var(--bg-primary); border: 1px solid var(--border); padding: 6px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; margin: 3px; transition: all 0.15s; user-select: none; }
+        .probe-chip:hover { border-color: var(--blue); background: rgba(88, 166, 255, 0.1); }
+        .probe-chip.selected { border-color: var(--accent); background: var(--accent); color: white; }
+        .probe-chip .chip-check { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        .probe-chip.selected .chip-check { background: white; color: var(--accent); border-color: white; }
+        .probe-category { background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+        .probe-category-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--bg-tertiary); }
+        .probe-category-header:hover { background: rgba(35, 134, 54, 0.08); }
+        .probe-category-header h5 { color: var(--purple); font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        .probe-category-header .count { background: var(--bg-primary); padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; color: var(--text-secondary); }
+        .probe-category-header .toggle { color: var(--text-secondary); font-size: 0.8rem; }
+        .probe-category-body { padding: 12px 16px; border-top: 1px solid var(--border); display: none; }
+        .probe-category-body.open { display: block; }
+        .probe-category-body p { color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 12px; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+        .section-divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+        .hidden { display: none !important; }
+        .tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .tab { padding: 8px 16px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; border-radius: 6px 6px 0 0; font-size: 0.85rem; }
+        .tab:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+        .tab.active { color: var(--accent); background: var(--bg-tertiary); border-bottom: 2px solid var(--accent); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .input-highlight { background: rgba(35, 134, 54, 0.3); border: 2px dashed var(--accent); padding: 2px 4px; border-radius: 4px; }
+        .field-row { display: flex; gap: 8px; align-items: center; padding: 10px 12px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; cursor: pointer; }
+        .field-row:hover { border-color: var(--blue); }
+        .field-row.selected { border-color: var(--accent); background: rgba(35, 134, 54, 0.1); }
+        .field-row .field-check { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .field-row.selected .field-check { border-color: var(--accent); background: var(--accent); }
+        .field-row.selected .field-check::after { content: '✓'; color: white; font-size: 11px; }
+        .field-row .field-path { color: var(--blue); font-family: monospace; font-size: 0.85rem; flex: 1; }
+        .field-row .field-value { color: var(--text-secondary); font-size: 0.8rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .stat-card { background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+        .stat-card .stat-value { font-size: 1.8rem; font-weight: bold; color: var(--accent); }
+        .stat-card .stat-label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; }
+        .toggle-switch { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .toggle-switch input { display: none; }
+        .toggle-switch label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .toggle-switch .switch { width: 44px; height: 24px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 12px; position: relative; transition: all 0.2s; }
+        .toggle-switch .switch::after { content: ''; position: absolute; width: 18px; height: 18px; background: var(--text-secondary); border-radius: 50%; top: 2px; left: 2px; transition: all 0.2s; }
+        .toggle-switch input:checked + label .switch { background: var(--accent); border-color: var(--accent); }
+        .toggle-switch input:checked + label .switch::after { left: 22px; background: white; }
+        .search-input { position: relative; }
+        .search-input input { padding-left: 36px; }
+        .search-input::before { content: '🔍'; position: absolute; left: 12px; top: 10px; font-size: 0.9rem; }
+        .select-all-btn { font-size: 0.75rem; color: var(--blue); cursor: pointer; margin-left: 12px; }
+        .select-all-btn:hover { text-decoration: underline; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: white; padding: 12px 20px; border-radius: 8px; z-index: 1000; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .subsection { margin: 16px 0; padding: 16px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; }
+        .subsection h5 { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛡️ Garak Config Builder</h1>
+            <p>LLM Vulnerability Scanner by NVIDIA - Command & YAML Config Generator (v0.15.1)</p>
+            <div class="badges">
+                <span class="badge nvidia">NVIDIA Garak</span>
+                <span class="badge">35+ Probe Modules</span>
+                <span class="badge">28+ Detectors</span>
+                <span class="badge">20+ Generators</span>
+                <span class="badge">6 Buffs</span>
+                <span class="badge">LLM-as-Judge</span>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <div class="wizard-panel">
+                <div class="card">
+                    <div class="steps">
+                        <button class="step-btn active" onclick="goToStep(1)"><span class="step-num">1</span> Scenario</button>
+                        <button class="step-btn" onclick="goToStep(2)"><span class="step-num">2</span> Target</button>
+                        <button class="step-btn" onclick="goToStep(3)"><span class="step-num">3</span> REST Config</button>
+                        <button class="step-btn" onclick="goToStep(4)"><span class="step-num">4</span> Probes</button>
+                        <button class="step-btn" onclick="goToStep(5)"><span class="step-num">5</span> Detectors</button>
+                        <button class="step-btn" onclick="goToStep(6)"><span class="step-num">6</span> Attacker/Judge</button>
+                        <button class="step-btn" onclick="goToStep(7)"><span class="step-num">7</span> Buffs</button>
+                        <button class="step-btn" onclick="goToStep(8)"><span class="step-num">8</span> Options</button>
+                        <button class="step-btn" onclick="goToStep(9)"><span class="step-num">9</span> Run</button>
+                    </div>
+
+                    <!-- Step 1: Test Scenario -->
+                    <div class="step-content active" id="step1">
+                        <div class="card-title"><div class="icon">1</div><span>Step 1: Choose Test Scenario</span></div>
+                        
+                        <div class="info-box">
+                            <h4>💡 What is Garak?</h4>
+                            <p>Garak is NVIDIA's LLM vulnerability scanner that tests AI models for jailbreaks, prompt injection, data leakage, toxicity, and more. Select a pre-configured test scenario below, or choose "Custom" to pick individual probes in Step 4.</p>
+                        </div>
+
+                        <div class="grid-4" id="scenarioGrid">
+                            <!-- Custom -->
+                            <div class="scenario-card selected" onclick="selectScenario('custom')">
+                                <div class="scenario-icon">🔧</div>
+                                <div class="scenario-title">Custom Test</div>
+                                <div class="scenario-desc">Full control - select individual probes in Step 4</div>
+                                <div class="scenario-probes">→ Configure in Step 4</div>
+                            </div>
+                            <!-- All -->
+                            <div class="scenario-card" onclick="selectScenario('all')">
+                                <div class="scenario-icon">🎯</div>
+                                <div class="scenario-title">All Probes</div>
+                                <div class="scenario-desc">Run every available probe - most thorough but slowest</div>
+                                <div class="scenario-probes">all (35+ probes)</div>
+                            </div>
+                            <!-- DAN -->
+                            <div class="scenario-card" onclick="selectScenario('dan')">
+                                <div class="scenario-icon">⚡</div>
+                                <div class="scenario-title">DAN Jailbreaks</div>
+                                <div class="scenario-desc">DAN 6.0-11.0, STAN, DUDE, AutoDAN prompts</div>
+                                <div class="scenario-probes">dan.*</div>
+                            </div>
+                            <!-- Grandma -->
+                            <div class="scenario-card" onclick="selectScenario('grandma')">
+                                <div class="scenario-icon">👵</div>
+                                <div class="scenario-title">Grandma Exploit</div>
+                                <div class="scenario-desc">Emotional manipulation via roleplay</div>
+                                <div class="scenario-probes">grandma</div>
+                            </div>
+                            <!-- Goodside -->
+                            <div class="scenario-card" onclick="selectScenario('goodside')">
+                                <div class="scenario-icon">🎭</div>
+                                <div class="scenario-title">Goodside Attacks</div>
+                                <div class="scenario-desc">Riley Goodside's prompt injection techniques</div>
+                                <div class="scenario-probes">goodside</div>
+                            </div>
+                            <!-- Prompt Inject -->
+                            <div class="scenario-card" onclick="selectScenario('promptinject')">
+                                <div class="scenario-icon">💉</div>
+                                <div class="scenario-title">Prompt Injection</div>
+                                <div class="scenario-desc">Hijack AI to follow injected instructions</div>
+                                <div class="scenario-probes">promptinject</div>
+                            </div>
+                            <!-- Encoding -->
+                            <div class="scenario-card" onclick="selectScenario('encoding')">
+                                <div class="scenario-icon">🔤</div>
+                                <div class="scenario-title">Encoding Bypass</div>
+                                <div class="scenario-desc">Base64, ROT13, Morse, Hex encoded attacks</div>
+                                <div class="scenario-probes">encoding</div>
+                            </div>
+                            <!-- Latent Injection -->
+                            <div class="scenario-card" onclick="selectScenario('latentinjection')">
+                                <div class="scenario-icon">🕳️</div>
+                                <div class="scenario-title">Latent Injection</div>
+                                <div class="scenario-desc">Hidden instructions in documents/resumes</div>
+                                <div class="scenario-probes">latentinjection</div>
+                            </div>
+                            <!-- Leakreplay -->
+                            <div class="scenario-card" onclick="selectScenario('leakreplay')">
+                                <div class="scenario-icon">📚</div>
+                                <div class="scenario-title">Training Data Leak</div>
+                                <div class="scenario-desc">Extract memorized copyrighted content</div>
+                                <div class="scenario-probes">leakreplay</div>
+                            </div>
+                            <!-- Package Hallucination -->
+                            <div class="scenario-card" onclick="selectScenario('packagehallucination')">
+                                <div class="scenario-icon">📦</div>
+                                <div class="scenario-title">Package Hallucination</div>
+                                <div class="scenario-desc">Fake Python/NPM/Ruby package recommendations</div>
+                                <div class="scenario-probes">packagehallucination</div>
+                            </div>
+                            <!-- System Prompt -->
+                            <div class="scenario-card" onclick="selectScenario('sysprompt')">
+                                <div class="scenario-icon">🔐</div>
+                                <div class="scenario-title">System Prompt Leak</div>
+                                <div class="scenario-desc">Extract hidden system prompts</div>
+                                <div class="scenario-probes">sysprompt_extraction</div>
+                            </div>
+                            <!-- Toxicity -->
+                            <div class="scenario-card" onclick="selectScenario('realtoxicityprompts')">
+                                <div class="scenario-icon">☠️</div>
+                                <div class="scenario-title">Toxicity</div>
+                                <div class="scenario-desc">RealToxicityPrompts benchmark</div>
+                                <div class="scenario-probes">realtoxicityprompts</div>
+                            </div>
+                            <!-- LMRC -->
+                            <div class="scenario-card" onclick="selectScenario('lmrc')">
+                                <div class="scenario-icon">📋</div>
+                                <div class="scenario-title">LMRC Risk Cards</div>
+                                <div class="scenario-desc">Slurs, bullying, sexual content tests</div>
+                                <div class="scenario-probes">lmrc</div>
+                            </div>
+                            <!-- Malware -->
+                            <div class="scenario-card" onclick="selectScenario('malwaregen')">
+                                <div class="scenario-icon">🦠</div>
+                                <div class="scenario-title">Malware Generation</div>
+                                <div class="scenario-desc">Will AI help write malicious code?</div>
+                                <div class="scenario-probes">malwaregen</div>
+                            </div>
+                            <!-- Do Not Answer -->
+                            <div class="scenario-card" onclick="selectScenario('donotanswer')">
+                                <div class="scenario-icon">🚫</div>
+                                <div class="scenario-title">Do Not Answer</div>
+                                <div class="scenario-desc">Questions AI should refuse to answer</div>
+                                <div class="scenario-probes">donotanswer</div>
+                            </div>
+                            <!-- XSS/Web -->
+                            <div class="scenario-card" onclick="selectScenario('xss')">
+                                <div class="scenario-icon">🌐</div>
+                                <div class="scenario-title">XSS & Web Injection</div>
+                                <div class="scenario-desc">XSS, markdown injection, data exfil</div>
+                                <div class="scenario-probes">xss, web_injection</div>
+                            </div>
+                            <!-- SQL/Template -->
+                            <div class="scenario-card" onclick="selectScenario('exploitation')">
+                                <div class="scenario-icon">💥</div>
+                                <div class="scenario-title">SQL/Template Injection</div>
+                                <div class="scenario-desc">SQL injection, Jinja template attacks</div>
+                                <div class="scenario-probes">exploitation</div>
+                            </div>
+                            <!-- TAP -->
+                            <div class="scenario-card" onclick="selectScenario('tap')">
+                                <div class="scenario-icon">🌳</div>
+                                <div class="scenario-title">TAP/PAIR (Attacker LLM)</div>
+                                <div class="scenario-desc">Automated jailbreak with attacker AI - requires Step 6 config</div>
+                                <div class="scenario-probes">tap, pair</div>
+                            </div>
+                            <!-- GOAT -->
+                            <div class="scenario-card" onclick="selectScenario('goat')">
+                                <div class="scenario-icon">🐐</div>
+                                <div class="scenario-title">GOAT Multi-Turn</div>
+                                <div class="scenario-desc">O-T-S-R framework multi-turn jailbreak - requires Step 6 config</div>
+                                <div class="scenario-probes">goat</div>
+                            </div>
+                            <!-- Attack Generation -->
+                            <div class="scenario-card" onclick="selectScenario('atkgen')">
+                                <div class="scenario-icon">🤖</div>
+                                <div class="scenario-title">Attack Generation</div>
+                                <div class="scenario-desc">Red team LLM generates attacks dynamically</div>
+                                <div class="scenario-probes">atkgen</div>
+                            </div>
+                            <!-- Glitch -->
+                            <div class="scenario-card" onclick="selectScenario('glitch')">
+                                <div class="scenario-icon">🔮</div>
+                                <div class="scenario-title">Glitch Tokens</div>
+                                <div class="scenario-desc">SolidGoldMagikarp and other glitch tokens</div>
+                                <div class="scenario-probes">glitch</div>
+                            </div>
+                            <!-- Continuation -->
+                            <div class="scenario-card" onclick="selectScenario('continuation')">
+                                <div class="scenario-icon">➡️</div>
+                                <div class="scenario-title">Slur Continuation</div>
+                                <div class="scenario-desc">Will AI complete offensive content?</div>
+                                <div class="scenario-probes">continuation</div>
+                            </div>
+                            <!-- Divergence -->
+                            <div class="scenario-card" onclick="selectScenario('divergence')">
+                                <div class="scenario-icon">🔄</div>
+                                <div class="scenario-title">Divergence</div>
+                                <div class="scenario-desc">Repetition-based attacks</div>
+                                <div class="scenario-probes">divergence</div>
+                            </div>
+                            <!-- Snowball -->
+                            <div class="scenario-card" onclick="selectScenario('snowball')">
+                                <div class="scenario-icon">⛄</div>
+                                <div class="scenario-title">Snowball Hallucination</div>
+                                <div class="scenario-desc">Factual consistency tests</div>
+                                <div class="scenario-probes">snowball</div>
+                            </div>
+                            <!-- Suffix -->
+                            <div class="scenario-card" onclick="selectScenario('suffix')">
+                                <div class="scenario-icon">📝</div>
+                                <div class="scenario-title">GCG/BEAST Suffix</div>
+                                <div class="scenario-desc">Adversarial suffix attacks</div>
+                                <div class="scenario-probes">suffix</div>
+                            </div>
+                            <!-- API Key -->
+                            <div class="scenario-card" onclick="selectScenario('apikey')">
+                                <div class="scenario-icon">🔑</div>
+                                <div class="scenario-title">API Key Extraction</div>
+                                <div class="scenario-desc">Attempt to extract API keys</div>
+                                <div class="scenario-probes">apikey</div>
+                            </div>
+                            <!-- ANSI -->
+                            <div class="scenario-card" onclick="selectScenario('ansiescape')">
+                                <div class="scenario-icon">🖥️</div>
+                                <div class="scenario-title">ANSI Escape</div>
+                                <div class="scenario-desc">Terminal escape sequence injection</div>
+                                <div class="scenario-probes">ansiescape</div>
+                            </div>
+                            <!-- Visual -->
+                            <div class="scenario-card" onclick="selectScenario('visual_jailbreak')">
+                                <div class="scenario-icon">🖼️</div>
+                                <div class="scenario-title">Visual Jailbreak</div>
+                                <div class="scenario-desc">FigStep visual/image attacks</div>
+                                <div class="scenario-probes">visual_jailbreak</div>
+                            </div>
+                        </div>
+
+                        <div class="nav-buttons">
+                            <div></div>
+                            <button class="btn" onclick="goToStep(2)">Next: Target LLM →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Target Generator -->
+                    <div class="step-content" id="step2">
+                        <div class="card-title"><div class="icon">2</div><span>Step 2: Select Target LLM</span></div>
+                        
+                        <div class="info-box">
+                            <h4>What is a Target?</h4>
+                            <p>The "target" is the AI model you want to scan. Garak supports cloud APIs (OpenAI, Azure, etc.), local models (Ollama, HuggingFace), and custom REST endpoints for your own LLM apps.</p>
+                        </div>
+                        
+                        <label class="required">Generator Type</label>
+                        <select id="targetGenerator" onchange="onGeneratorChange()">
+                            <optgroup label="🌐 Custom REST API (Test Your Own LLM App)">
+                                <option value="rest.RestGenerator">rest.RestGenerator - Any REST API endpoint</option>
+                            </optgroup>
+                            <optgroup label="☁️ OpenAI">
+                                <option value="openai.OpenAIGenerator">openai.OpenAIGenerator - GPT-3.5, GPT-4, GPT-4o</option>
+                                <option value="openai.OpenAIReasoningGenerator">openai.OpenAIReasoningGenerator - o1, o3 reasoning</option>
+                            </optgroup>
+                            <optgroup label="🏠 Local (Free, No API Key)">
+                                <option value="ollama.OllamaGenerator">ollama.OllamaGenerator - Ollama completions</option>
+                                <option value="ollama.OllamaGeneratorChat">ollama.OllamaGeneratorChat - Ollama chat</option>
+                                <option value="huggingface.Pipeline">huggingface.Pipeline - HF Transformers local</option>
+                                <option value="huggingface.Model">huggingface.Model - HF Model direct</option>
+                                <option value="ggml.GgmlGenerator">ggml.GgmlGenerator - GGML/GGUF files</option>
+                            </optgroup>
+                            <optgroup label="☁️ Azure">
+                                <option value="azure.AzureOpenAIGenerator">azure.AzureOpenAIGenerator - Azure OpenAI</option>
+                            </optgroup>
+                            <optgroup label="☁️ AWS">
+                                <option value="bedrock.BedrockGenerator">bedrock.BedrockGenerator - AWS Bedrock</option>
+                            </optgroup>
+                            <optgroup label="⚡ Fast Inference">
+                                <option value="groq.GroqChat">groq.GroqChat - Groq (ultra-fast)</option>
+                                <option value="mistral.MistralGenerator">mistral.MistralGenerator - Mistral AI</option>
+                                <option value="cohere.CohereGenerator">cohere.CohereGenerator - Cohere</option>
+                            </optgroup>
+                            <optgroup label="🟢 NVIDIA">
+                                <option value="nim.NVOpenAIChat">nim.NVOpenAIChat - NVIDIA NIM</option>
+                                <option value="nvcf.NvcfChat">nvcf.NvcfChat - NVIDIA Cloud Functions</option>
+                            </optgroup>
+                            <optgroup label="🤗 HuggingFace Cloud">
+                                <option value="huggingface.InferenceAPI">huggingface.InferenceAPI - HF Inference API</option>
+                                <option value="huggingface.InferenceEndpoint">huggingface.InferenceEndpoint - HF Endpoints</option>
+                            </optgroup>
+                            <optgroup label="🔗 Other">
+                                <option value="replicate.ReplicateGenerator">replicate.ReplicateGenerator - Replicate</option>
+                                <option value="litellm.LiteLLMGenerator">litellm.LiteLLMGenerator - LiteLLM (100+ providers)</option>
+                                <option value="watsonx.WatsonXGenerator">watsonx.WatsonXGenerator - IBM WatsonX</option>
+                                <option value="langchain.LangChainLLMGenerator">langchain.LangChainLLMGenerator - LangChain</option>
+                                <option value="rasa.RasaRestGenerator">rasa.RasaRestGenerator - Rasa chatbot</option>
+                                <option value="function.Single">function.Single - Python function wrapper</option>
+                            </optgroup>
+                        </select>
+                        
+                        <div id="modelNameSection">
+                            <label>Model Name</label>
+                            <input type="text" id="targetModel" placeholder="e.g., gpt-4, llama3.2:3b, meta/llama-3.1-8b-instruct" oninput="updatePreview()">
+                            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: -12px; margin-bottom: 16px;">
+                                Examples: <code>gpt-4</code> | <code>gpt-3.5-turbo</code> | <code>llama3.2:3b</code> (Ollama) | <code>mistral-large-latest</code>
+                            </p>
+                        </div>
+
+                        <div class="info-box warning" id="apiKeyHint">
+                            <h4>⚠️ API Key Required</h4>
+                            <p>Set your API key as environment variable before running:</p>
+                            <code id="apiKeyEnvExample">export OPENAI_API_KEY="sk-..."</code>
+                        </div>
+
+                        <div class="grid-2">
+                            <div>
+                                <label>Generations Per Prompt</label>
+                                <input type="number" id="generations" value="5" min="1" max="100" oninput="updatePreview()">
+                                <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">How many times to send each test prompt (more = thorough but slower)</p>
+                            </div>
+                            <div>
+                                <label>Random Seed (optional)</label>
+                                <input type="number" id="seed" placeholder="Leave empty for random" oninput="updatePreview()">
+                                <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Set for reproducible results</p>
+                            </div>
+                        </div>
+
+                        <div class="nav-buttons">
+                            <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+                            <button class="btn" onclick="goToStep(3)">Next: REST Config →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: REST API Configuration -->
+                    <div class="step-content" id="step3">
+                        <div class="card-title"><div class="icon">3</div><span>Step 3: REST API Configuration</span></div>
+                        
+                        <div id="restNotNeeded" class="info-box success hidden">
+                            <h4>✓ REST Configuration Not Needed</h4>
+                            <p>You selected a built-in generator. Skip this step unless you want to test a custom REST API.</p>
+                        </div>
+
+                        <div id="restConfigSection">
+                            <div class="info-box purple">
+                                <h4>🌐 Test Your Own LLM Web App / API</h4>
+                                <p>Paste a raw HTTP request from Burp Suite, browser DevTools, or manually configure the endpoint. Mark the input field where test prompts should be injected.</p>
+                            </div>
+
+                            <div class="tabs">
+                                <button class="tab active" onclick="switchRestTab('paste')">Paste Request</button>
+                                <button class="tab" onclick="switchRestTab('manual')">Manual Config</button>
+                            </div>
+
+                            <div class="tab-content active" id="restTabPaste">
+                                <label>Paste Raw HTTP Request</label>
+                                <textarea id="rawHttpRequest" rows="10" placeholder="POST /api/chat HTTP/1.1
+Host: your-llm-app.com
+Content-Type: application/json
+Authorization: Bearer your-token
+
+{&quot;message&quot;: &quot;Hello&quot;, &quot;user_id&quot;: 123}" oninput="parseHttpRequest()"></textarea>
+                                
+                                <div class="btn-group" style="margin-top: -8px; margin-bottom: 16px;">
+                                    <button class="btn btn-sm" onclick="parseHttpRequest()">🔍 Parse Request</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="loadRestSample()">📋 JSON Sample</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="loadMultipartSample()">📋 Multipart Sample</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="clearRestConfig()">✕ Clear</button>
+                                </div>
+
+                                <div id="parsedFieldsSection" class="hidden">
+                                    <div class="info-box warning">
+                                        <h4>⚠️ Select the INPUT Field</h4>
+                                        <p>Click on the field where Garak should inject test prompts. Usually called "message", "prompt", "content", "query", or similar.</p>
+                                    </div>
+                                    <div id="parsedFieldsList"></div>
+                                </div>
+
+                                <div id="manualInputMarker" style="margin-top: 16px;">
+                                    <label>Or Manually Mark Input with $INPUT</label>
+                                    <textarea id="manualTemplate" rows="4" placeholder='{"messages": [{"role": "user", "content": "$INPUT"}]}' oninput="updatePreview()"></textarea>
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: -12px;">
+                                        Replace the actual user message with <code>$INPUT</code> - Garak will inject test prompts there.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="restTabManual">
+                                <div class="grid-2">
+                                    <div>
+                                        <label class="required">API Endpoint URL</label>
+                                        <input type="text" id="restUri" placeholder="https://your-api.com/v1/chat" oninput="suggestResponseJsonField(); updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>HTTP Method</label>
+                                        <select id="restMethod" onchange="updatePreview()">
+                                            <option value="post">POST</option>
+                                            <option value="get">GET</option>
+                                            <option value="put">PUT</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <label class="required">Request Body Template (use $INPUT for prompt)</label>
+                                <textarea id="restBodyTemplate" rows="4" placeholder='{"messages": [{"role": "user", "content": "$INPUT"}], "model": "gpt-4"}' oninput="updatePreview()"></textarea>
+
+                                <label>Custom Headers (one per line: Name: Value)</label>
+                                <textarea id="restHeaders" rows="3" placeholder="Authorization: Bearer $KEY
+Content-Type: application/json" oninput="updatePreview()"></textarea>
+
+                                <div class="grid-2">
+                                    <div>
+                                        <label>Response JSON Path (where is the AI response?)</label>
+                                        <input type="text" id="responseJsonPath" placeholder="$.choices[0].message.content" value="$.choices[0].message.content" oninput="this.dataset.userModified='true'; updatePreview()">
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">JSONPath: <code>$.choices[0].message.content</code> (OpenAI), <code>answer</code> (Gandalf), <code>response</code></p>
+                                    </div>
+                                    <div>
+                                        <label>API Key Environment Variable</label>
+                                        <input type="text" id="restKeyEnvVar" placeholder="REST_API_KEY" oninput="updatePreview()">
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Use <code>$KEY</code> in headers to reference this</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="section-divider">
+
+                            <div class="subsection">
+                                <h5>🔌 Advanced Options</h5>
+                                <div class="grid-3">
+                                    <div>
+                                        <label>HTTP Proxy (Burp Suite)</label>
+                                        <input type="text" id="httpProxy" placeholder="http://127.0.0.1:8080" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>Request Timeout (seconds)</label>
+                                        <input type="number" id="requestTimeout" value="60" min="1" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>Rate Limit Codes</label>
+                                        <input type="text" id="rateLimitCodes" value="429" placeholder="429, 503" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                                <div class="toggle-switch" style="margin-top: 12px;">
+                                    <input type="checkbox" id="verifySSL" checked>
+                                    <label for="verifySSL"><span class="switch"></span> Verify SSL Certificate</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="nav-buttons">
+                            <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+                            <button class="btn" onclick="goToStep(4)">Next: Probes →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Probes -->
+                    <div class="step-content" id="step4">
+                        <div class="card-title"><div class="icon">4</div><span>Step 4: Select Security Probes</span></div>
+                        
+                        <div class="info-box" id="probeScenarioInfo">
+                            <h4>ℹ️ Probes Based on Scenario</h4>
+                            <p>You selected <strong id="selectedScenarioName">Custom</strong> in Step 1. Adjust probes below or keep the defaults.</p>
+                        </div>
+
+                        <div class="search-input">
+                            <input type="text" id="probeSearch" placeholder="Search probes..." oninput="filterProbes()">
+                        </div>
+
+                        <div class="btn-group" style="margin-bottom: 16px;">
+                            <button class="btn btn-sm btn-secondary" onclick="selectAllProbes()">Select All</button>
+                            <button class="btn btn-sm btn-secondary" onclick="clearAllProbes()">Clear All</button>
+                            <span style="color: var(--text-secondary); font-size: 0.8rem; margin-left: 12px;">Selected: <strong id="probeCount">0</strong></span>
+                        </div>
+
+                        <div id="probeCategories">
+                            <!-- Jailbreak -->
+                            <div class="probe-category">
+                                <div class="probe-category-header" onclick="toggleCategory(this)">
+                                    <h5>⚔️ Jailbreak & Safety Bypass <span class="count">5</span></h5>
+                                    <span class="toggle">▼</span>
+                                </div>
+                                <div class="probe-category-body">
+                                    <p>Attempts to make the AI ignore safety instructions</p>
+                                    <div class="probe-chips" data-category="jailbreak">
+                                        <span class="probe-chip" data-probe="dan" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>dan - DAN 6-11, STAN, DUDE, AutoDAN</span>
+                                        <span class="probe-chip" data-probe="grandma" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>grandma - Emotional manipulation</span>
+                                        <span class="probe-chip" data-probe="goodside" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>goodside - Goodside injections</span>
+                                        <span class="probe-chip" data-probe="doctor" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>doctor - Medical advice bypass</span>
+                                        <span class="probe-chip" data-probe="donotanswer" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>donotanswer - Forbidden questions</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Prompt Injection -->
+                            <div class="probe-category">
+                                <div class="probe-category-header" onclick="toggleCategory(this)">
+                                    <h5>💉 Prompt Injection <span class="count">4</span></h5>
+                                    <span class="toggle">▼</span>
+                                </div>
+                                <div class="probe-category-body">
+                                    <p>Hijack AI to follow injected instructions</p>
+                                    <div class="probe-chips" data-category="injection">
+                                        <span class="probe-chip" data-probe="promptinject" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>promptinject - Prompt injection framework</span>
+                                        <span class="probe-chip" data-probe="latentinjection" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>latentinjection - Hidden in documents</span>
+                                        <span class="probe-chip" data-probe="encoding" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>encoding - Base64/ROT13/Morse</span>
+                                        <span class="probe-chip" data-probe="smuggling" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>smuggling - Unicode/homoglyphs</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Leakage -->
+                            <div class="probe-category">
+                                <div class="probe-category-header" onclick="toggleCategory(this)">
+                                    <h5>🔓 Data Leakage & Privacy <span class="count">5</span></h5>
+                                    <span class="toggle">▼</span>
+                                </div>
+                                <div class="probe-category-body">
+                                    <p>Extract training data, system prompts, API keys</p>
+                                    <div class="probe-chips" data-category="leakage">
+                                        <span class="probe-chip" data-probe="leakreplay" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>leakreplay - Training data extraction</span>
+                                        <span class="probe-chip" data-probe="sysprompt_extraction" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>sysprompt_extraction - System prompt leak</span>
+                                        <span class="probe-chip" data-probe="apikey" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>apikey - API key extraction</span>
+                                        <span class="probe-chip" data-probe="propile" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>propile - PII leakage</span>
+                                        <span class="probe-chip" data-probe="phrasing" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>phrasing - Tense evasion</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hallucination -->
+                            <div class="probe-category">
+                                <div class="probe-category-header" onclick="toggleCategory(this)">
+                                    <h5>👻 Hallucination & Misinformation <span class="count">3</span></h5>
+                                    <span class="toggle">▼</span>
+                                </div>
+                                <div class="probe-category-body">
+                                    <p>Fake packages, factual errors, misinformation</p>
+                                    <div class="probe-chips" data-category="hallucination">
+                                        <span class="probe-chip" data-probe="packagehallucination" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>packagehallucination - Fake Python/NPM packages</span>
+                                        <span class="probe-chip" data-probe="snowball" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>snowball - Factual consistency</span>
+                                        <span class="probe-chip" data-probe="misleading" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>misleading - False assertions</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Toxicity -->
+                            <div class="probe-category">
+                                <div class="probe-category-header" onclick="toggleCategory(this)">
+                                    <h5>☠️ Toxicity & Harmful Content <span class="count">4</span></h5>
+                                    <span class="toggle">▼</span>
+                                </div>
+                                <div class="probe-category-body">
+                                    <p>Toxic, offensive, or dangerous content generation</p>
+                                    <div class="probe-chips" data-category="toxicity">
+                                        <span class="probe-chip" data-probe="realtoxicityprompts" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>realtoxicityprompts - RealToxicityPrompts</span>
+                                        <span class="probe-chip" data-probe="lmrc" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>lmrc - Language Model Risk Cards</span>
+                                        <span class="probe-chip" data-probe="continuation" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>continuation - Slur continuation</span>
+                                        <span class="probe-chip" data-probe="malwaregen" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>malwaregen - Malware code generation</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Web Security -->
+                            <div class="probe-category">
+                                <div class="probe-category-header" onclick="toggleCategory(this)">
+                                    <h5>🌐 Web & Application Security <span class="count">4</span></h5>
+                                    <span class="toggle">▼</span>
+                                </div>
+                                <div class="probe-category-body">
+                                    <p>XSS, SQL injection, template injection in AI responses</p>
+                                    <div class="probe-chips" data-category="web">
+                                        <span class="probe-chip" data-probe="xss" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>xss - Cross-site scripting</span>
+                                        <span class="probe-chip" data-probe="exploitation" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>exploitation - SQL/Jinja injection</span>
+                                        <span class="probe-chip" data-probe="ansiescape" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>ansiescape - ANSI terminal escapes</span>
+                                        <span class="probe-chip" data-probe="fileformats" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>fileformats - Unsafe file handling</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Advanced/Multi-Turn -->
+                            <div class="probe-category">
+                                <div class="probe-category-header" onclick="toggleCategory(this)">
+                                    <h5>🔬 Advanced & Multi-Turn (Require Attacker LLM) <span class="count">5</span></h5>
+                                    <span class="toggle">▼</span>
+                                </div>
+                                <div class="probe-category-body">
+                                    <p>Automated attacks using an attacker LLM - configure in Step 6</p>
+                                    <div class="probe-chips" data-category="advanced">
+                                        <span class="probe-chip" data-probe="tap" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>tap - Tree of Attacks with Pruning</span>
+                                        <span class="probe-chip" data-probe="goat" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>goat - GOAT O-T-S-R framework</span>
+                                        <span class="probe-chip" data-probe="atkgen" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>atkgen - Dynamic attack generation</span>
+                                        <span class="probe-chip" data-probe="fitd" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>fitd - Foot-In-The-Door</span>
+                                        <span class="probe-chip" data-probe="suffix" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>suffix - GCG/BEAST adversarial</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Experimental -->
+                            <div class="probe-category">
+                                <div class="probe-category-header" onclick="toggleCategory(this)">
+                                    <h5>🧪 Experimental & Other <span class="count">7</span></h5>
+                                    <span class="toggle">▼</span>
+                                </div>
+                                <div class="probe-category-body">
+                                    <p>Specialized and experimental probes</p>
+                                    <div class="probe-chips" data-category="experimental">
+                                        <span class="probe-chip" data-probe="glitch" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>glitch - Glitch tokens</span>
+                                        <span class="probe-chip" data-probe="divergence" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>divergence - Repetition attacks</span>
+                                        <span class="probe-chip" data-probe="visual_jailbreak" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>visual_jailbreak - Image/FigStep</span>
+                                        <span class="probe-chip" data-probe="av_spam_scanning" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>av_spam_scanning - EICAR/GTUBE</span>
+                                        <span class="probe-chip" data-probe="topic" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>topic - Topic restrictions</span>
+                                        <span class="probe-chip" data-probe="agent_breaker" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>agent_breaker - Agent breakout</span>
+                                        <span class="probe-chip" data-probe="badchars" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>badchars - Bad character handling</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="section-divider">
+                        <label>Or enter probe spec manually:</label>
+                        <input type="text" id="customProbeSpec" placeholder="dan,encoding,promptinject or dan.Dan_11_0,encoding.InjectBase64" oninput="updatePreview()">
+
+                        <div class="nav-buttons">
+                            <button class="btn btn-secondary" onclick="goToStep(3)">← Back</button>
+                            <button class="btn" onclick="goToStep(5)">Next: Detectors →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Detectors -->
+                    <div class="step-content" id="step5">
+                        <div class="card-title"><div class="icon">5</div><span>Step 5: Select Detectors</span></div>
+                        
+                        <div class="info-box">
+                            <h4>What are Detectors?</h4>
+                            <p>Detectors analyze AI responses to determine if an attack succeeded. By default, each probe uses its own recommended detector. You can override with custom detectors or use LLM-as-Judge.</p>
+                        </div>
+
+                        <label>Detector Mode</label>
+                        <div class="grid-3" style="margin-bottom: 20px;">
+                            <div class="scenario-card selected" onclick="selectDetectorMode('auto')">
+                                <div class="scenario-icon">🎯</div>
+                                <div class="scenario-title">Auto (Recommended)</div>
+                                <div class="scenario-desc">Each probe uses its own detector</div>
+                            </div>
+                            <div class="scenario-card" onclick="selectDetectorMode('extended')">
+                                <div class="scenario-icon">🔍</div>
+                                <div class="scenario-title">Extended</div>
+                                <div class="scenario-desc">Run additional detectors beyond the primary</div>
+                            </div>
+                            <div class="scenario-card" onclick="selectDetectorMode('custom')">
+                                <div class="scenario-icon">🔧</div>
+                                <div class="scenario-title">Custom</div>
+                                <div class="scenario-desc">Specify exact detectors to use</div>
+                            </div>
+                        </div>
+
+                        <div id="customDetectorSection" class="hidden">
+                            <label>Select Detectors</label>
+                            <div id="detectorChips" style="margin-bottom: 16px;">
+                                <span class="probe-chip" data-detector="always.Pass" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>always.Pass</span>
+                                <span class="probe-chip" data-detector="dan.DAN" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>dan.DAN</span>
+                                <span class="probe-chip" data-detector="mitigation.MitigationBypass" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>mitigation.MitigationBypass</span>
+                                <span class="probe-chip" data-detector="encoding.DecodeMatch" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>encoding.DecodeMatch</span>
+                                <span class="probe-chip" data-detector="unsafe_content.ToxicCommentModel" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>unsafe_content.ToxicCommentModel</span>
+                                <span class="probe-chip" data-detector="perspective.API" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>perspective.API</span>
+                                <span class="probe-chip" data-detector="packagehallucination.PythonPypi" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>packagehallucination.PythonPypi</span>
+                                <span class="probe-chip" data-detector="knownbadsignatures.EICAR" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>knownbadsignatures.EICAR</span>
+                                <span class="probe-chip" data-detector="sysprompt_extraction.Contains" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>sysprompt_extraction.Contains</span>
+                                <span class="probe-chip" data-detector="judge.Jailbreak" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>judge.Jailbreak (LLM)</span>
+                                <span class="probe-chip" data-detector="judge.Refusal" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>judge.Refusal (LLM)</span>
+                                <span class="probe-chip" data-detector="judge.ModelAsJudge" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>judge.ModelAsJudge (LLM)</span>
+                            </div>
+                            <label>Or enter detector spec:</label>
+                            <input type="text" id="customDetectorSpec" placeholder="dan.DAN,mitigation.MitigationBypass" oninput="updatePreview()">
+                        </div>
+
+                        <div class="nav-buttons">
+                            <button class="btn btn-secondary" onclick="goToStep(4)">← Back</button>
+                            <button class="btn" onclick="goToStep(6)">Next: Attacker/Judge →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Attacker & Judge LLM -->
+                    <div class="step-content" id="step6">
+                        <div class="card-title"><div class="icon">6</div><span>Step 6: Attacker & Judge LLM Configuration</span></div>
+                        
+                        <div class="info-box purple">
+                            <h4>🤖 Advanced: Attacker & Judge LLMs</h4>
+                            <p>Some probes (TAP, GOAT, atkgen) use an <strong>attacker LLM</strong> to generate jailbreaks. Some detectors (judge.*) use an <strong>evaluator/judge LLM</strong> to assess responses. Configure these here if using those features.</p>
+                        </div>
+
+                        <div id="attackerNeededNote" class="info-box warning hidden">
+                            <h4>⚠️ Attacker LLM Required</h4>
+                            <p>You selected probes that require an attacker LLM (TAP, GOAT, or atkgen). Configure below.</p>
+                        </div>
+
+                        <!-- Attacker LLM -->
+                        <div class="subsection">
+                            <h5>⚔️ Attacker / Red Team LLM (for TAP, GOAT, atkgen)</h5>
+                            
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="enableAttacker" onchange="toggleAttackerConfig()">
+                                <label for="enableAttacker"><span class="switch"></span> Enable Attacker LLM</label>
+                            </div>
+                            
+                            <div id="attackerConfig" class="hidden">
+                                <div class="grid-2">
+                                    <div>
+                                        <label>Attacker Generator Type</label>
+                                        <select id="attackerType" onchange="updatePreview()">
+                                            <option value="huggingface.Pipeline">huggingface.Pipeline (Local)</option>
+                                            <option value="huggingface.Model">huggingface.Model (Local)</option>
+                                            <option value="openai.OpenAIGenerator">openai.OpenAIGenerator</option>
+                                            <option value="ollama.OllamaGeneratorChat">ollama.OllamaGeneratorChat</option>
+                                            <option value="nim.NVOpenAIChat">nim.NVOpenAIChat</option>
+                                            <option value="groq.GroqChat">groq.GroqChat</option>
+                                            <option value="mistral.MistralGenerator">mistral.MistralGenerator</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label>Attacker Model Name</label>
+                                        <input type="text" id="attackerModel" placeholder="mistralai/Ministral-8B-Instruct-2410" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                                <div class="grid-3">
+                                    <div>
+                                        <label>Max Calls Per Conversation</label>
+                                        <input type="number" id="attackerMaxCalls" value="5" min="1" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>Branching Factor (TAP)</label>
+                                        <input type="number" id="tapBranching" value="4" min="1" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>Depth (TAP)</label>
+                                        <input type="number" id="tapDepth" value="10" min="1" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Judge/Evaluator LLM -->
+                        <div class="subsection">
+                            <h5>⚖️ Judge / Evaluator LLM (for judge.* detectors, TAP evaluator)</h5>
+                            
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="enableJudge" onchange="toggleJudgeConfig()">
+                                <label for="enableJudge"><span class="switch"></span> Enable Judge LLM</label>
+                            </div>
+                            
+                            <div id="judgeConfig" class="hidden">
+                                <div class="grid-2">
+                                    <div>
+                                        <label>Judge Generator Type</label>
+                                        <select id="judgeType" onchange="updatePreview()">
+                                            <option value="nim.NVOpenAIChat">nim.NVOpenAIChat (Recommended)</option>
+                                            <option value="openai.OpenAIGenerator">openai.OpenAIGenerator</option>
+                                            <option value="openai.OpenAIReasoningGenerator">openai.OpenAIReasoningGenerator</option>
+                                            <option value="huggingface.Pipeline">huggingface.Pipeline</option>
+                                            <option value="ollama.OllamaGeneratorChat">ollama.OllamaGeneratorChat</option>
+                                            <option value="groq.GroqChat">groq.GroqChat</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label>Judge Model Name</label>
+                                        <input type="text" id="judgeModel" placeholder="meta/llama3-70b-instruct" value="meta/llama3-70b-instruct" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                                <div class="grid-2">
+                                    <div>
+                                        <label>Confidence Cutoff (1-10)</label>
+                                        <input type="number" id="judgeConfidence" value="7" min="1" max="10" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>Custom Judgment Goal (optional)</label>
+                                        <input type="text" id="judgeGoal" placeholder="Determine if response is harmful" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="nav-buttons">
+                            <button class="btn btn-secondary" onclick="goToStep(5)">← Back</button>
+                            <button class="btn" onclick="goToStep(7)">Next: Buffs →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 7: Buffs -->
+                    <div class="step-content" id="step7">
+                        <div class="card-title"><div class="icon">7</div><span>Step 7: Configure Buffs (Optional)</span></div>
+                        
+                        <div class="info-box">
+                            <h4>What are Buffs?</h4>
+                            <p>Buffs transform prompts before sending to the AI. For example: translate to other languages, paraphrase, encode in Base64, or lowercase. This tests if the AI's defenses work against transformed inputs.</p>
+                        </div>
+
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="enableBuffs" onchange="toggleBuffsSection()">
+                            <label for="enableBuffs"><span class="switch"></span> Enable Buffs</label>
+                        </div>
+
+                        <div id="buffsSection" class="hidden">
+                            <label>Select Buffs</label>
+                            <div id="buffChips" style="margin-bottom: 16px;">
+                                <span class="probe-chip" data-buff="paraphrase.Fast" onclick="toggleBuffChip(this)"><span class="chip-check">✓</span>paraphrase.Fast - T5 paraphrasing</span>
+                                <span class="probe-chip" data-buff="paraphrase.PegasusT5" onclick="toggleBuffChip(this)"><span class="chip-check">✓</span>paraphrase.PegasusT5 - High-quality paraphrase</span>
+                                <span class="probe-chip" data-buff="lowercase.Lowercase" onclick="toggleBuffChip(this)"><span class="chip-check">✓</span>lowercase.Lowercase - Convert to lowercase</span>
+                                <span class="probe-chip" data-buff="encoding.Base64" onclick="toggleBuffChip(this)"><span class="chip-check">✓</span>encoding.Base64 - Base64 encode</span>
+                                <span class="probe-chip" data-buff="encoding.CharCode" onclick="toggleBuffChip(this)"><span class="chip-check">✓</span>encoding.CharCode - Character codes</span>
+                                <span class="probe-chip" data-buff="low_resource_languages.LRLBuff" onclick="toggleBuffChip(this)"><span class="chip-check">✓</span>low_resource_languages.LRLBuff - Translate to low-resource languages</span>
+                            </div>
+                            
+                            <div class="grid-2">
+                                <div>
+                                    <label>Include Original Prompt?</label>
+                                    <select id="buffsIncludeOriginal" onchange="updatePreview()">
+                                        <option value="false">No - Only buffed versions</option>
+                                        <option value="true">Yes - Include original + buffed</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Max Buff Outputs (optional)</label>
+                                    <input type="number" id="buffMax" placeholder="Unlimited" min="1" oninput="updatePreview()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="nav-buttons">
+                            <button class="btn btn-secondary" onclick="goToStep(6)">← Back</button>
+                            <button class="btn" onclick="goToStep(8)">Next: Options →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 8: Options -->
+                    <div class="step-content" id="step8">
+                        <div class="card-title"><div class="icon">8</div><span>Step 8: Additional Options</span></div>
+                        
+                        <div class="subsection">
+                            <h5>⚡ Performance</h5>
+                            <div class="grid-3">
+                                <div>
+                                    <label>Parallel Attempts</label>
+                                    <input type="number" id="parallelAttempts" placeholder="Auto" min="1" oninput="updatePreview()">
+                                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Probe attempts in parallel</p>
+                                </div>
+                                <div>
+                                    <label>Parallel Requests</label>
+                                    <input type="number" id="parallelRequests" placeholder="Auto" min="1" oninput="updatePreview()">
+                                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Requests per prompt in parallel</p>
+                                </div>
+                                <div>
+                                    <label>Eval Threshold</label>
+                                    <input type="number" id="evalThreshold" value="0.5" step="0.1" min="0" max="1" oninput="updatePreview()">
+                                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Score above = hit (0.0-1.0)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h5>📊 Reporting</h5>
+                            <div class="grid-2">
+                                <div>
+                                    <label>Report Prefix</label>
+                                    <input type="text" id="reportPrefix" placeholder="Auto-generated" oninput="updatePreview()">
+                                </div>
+                                <div>
+                                    <label>Taxonomy Grouping</label>
+                                    <select id="taxonomy" onchange="updatePreview()">
+                                        <option value="">Default (by probe)</option>
+                                        <option value="owasp">OWASP LLM Top 10</option>
+                                        <option value="avid-effect">AVID Effects</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;">
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="verbose">
+                                    <label for="verbose"><span class="switch"></span> Verbose Output (-v)</label>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="narrowOutput">
+                                    <label for="narrowOutput"><span class="switch"></span> Narrow Output</label>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="deprefix" checked>
+                                    <label for="deprefix"><span class="switch"></span> Remove Prompt from Output</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h5>🔧 Advanced</h5>
+                            <label>Probe Tags Filter</label>
+                            <input type="text" id="probeTags" placeholder="e.g., owasp:llm01 or avid-effect:security" oninput="updatePreview()">
+                            
+                            <label>System Prompt for Target</label>
+                            <textarea id="systemPrompt" rows="2" placeholder="Custom system prompt used during testing..." oninput="updatePreview()"></textarea>
+
+                            <label>Quick Config Preset</label>
+                            <select id="configPreset" onchange="applyPreset()">
+                                <option value="">None</option>
+                                <option value="fast">fast - Light probes, skip extended detectors</option>
+                                <option value="bag">bag - Calibration config</option>
+                            </select>
+                        </div>
+
+                        <div class="nav-buttons">
+                            <button class="btn btn-secondary" onclick="goToStep(7)">← Back</button>
+                            <button class="btn" onclick="goToStep(9)">Next: Run →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 9: Run -->
+                    <div class="step-content" id="step9">
+                        <div class="card-title"><div class="icon">9</div><span>Step 9: Run Your Scan</span></div>
+                        
+                        <div class="info-box success">
+                            <h4>✓ Configuration Complete!</h4>
+                            <p>Copy the command below to run your Garak scan. You can use either JSON or YAML config.</p>
+                        </div>
+
+                        <div class="subsection">
+                            <h5>🚀 Run Commands</h5>
+                            <div id="commandOptionsSection">
+                                <div style="margin-bottom: 12px;">
+                                    <label style="font-weight: 600; color: var(--primary);">Option 1: Using JSON config</label>
+                                    <div class="code-block" id="jsonCommandPreview" style="margin-top: 4px;">garak --target_type rest -G garak-rest.json --probes dan -v</div>
+                                    <button class="copy-btn" style="margin-top: 4px;" onclick="copyJsonCommand()">Copy</button>
+                                </div>
+                                <div>
+                                    <label style="font-weight: 600; color: var(--success);">Option 2: Using YAML config (recommended - includes all settings)</label>
+                                    <div class="code-block" id="yamlCommandPreview" style="margin-top: 4px;">garak --config garak-config.yaml</div>
+                                    <button class="copy-btn" style="margin-top: 4px;" onclick="copyYamlCommand()">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-4" style="margin-bottom: 20px;">
+                            <div class="stat-card">
+                                <div class="stat-value" id="statTarget">-</div>
+                                <div class="stat-label">Target</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="statProbes">0</div>
+                                <div class="stat-label">Probes</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="statGenerations">5</div>
+                                <div class="stat-label">Generations</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="statBuffs">0</div>
+                                <div class="stat-label">Buffs</div>
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <h4>📦 Installation</h4>
+                            <code>pip install garak</code>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn" onclick="downloadYaml()">⬇️ Download YAML</button>
+                            <button class="btn btn-secondary" id="downloadJsonBtn" onclick="downloadRestJson()" style="display:none;">⬇️ Download JSON (REST)</button>
+                            <button class="btn btn-danger" onclick="resetWizard()">🔄 Reset All</button>
+                        </div>
+
+                        <div class="info-box warning" style="margin-top: 16px;">
+                            <h4>⚠️ Before Running</h4>
+                            <ul>
+                                <li>Set required API keys as environment variables</li>
+                                <li>Ensure you have permission to test the target</li>
+                                <li>Start with fewer probes to estimate runtime</li>
+                                <li>Use <code>--config fast</code> for quick initial test</li>
+                            </ul>
+                        </div>
+
+                        <div class="nav-buttons">
+                            <button class="btn btn-secondary" onclick="goToStep(8)">← Back</button>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="preview-panel">
+                <div class="card">
+                    <h3>Live Preview</h3>
+                    
+                    <div class="preview-section">
+                        <h4>CLI Commands</h4>
+                        <div style="font-size: 0.7rem; margin-bottom: 8px;">
+                            <span style="color: var(--primary);">JSON:</span>
+                            <div class="code-block" id="commandPreview" style="font-size: 0.7rem; padding: 8px;">garak --target_type rest -G garak-rest.json --probes all</div>
+                            <button class="copy-btn" onclick="copyJsonCommand()">Copy</button>
+                        </div>
+                        <div style="font-size: 0.7rem;">
+                            <span style="color: var(--success);">YAML (recommended):</span>
+                            <div class="code-block" id="yamlCommandSidePreview" style="font-size: 0.7rem; padding: 8px;">garak --config garak-config.yaml</div>
+                            <button class="copy-btn" onclick="copyYamlCommand()">Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="preview-section">
+                        <h4>YAML Config <button class="copy-btn" onclick="copyYaml()">Copy</button></h4>
+                        <div class="code-block yaml-block" id="yamlPreview"># Save as: garak-config.yaml
+# Run: garak --config garak-config.yaml
+
+plugins:
+  target_type: openai
+  target_name: gpt-4
+  probe_spec: all
+
+run:
+  generations: 5</div>
+                    </div>
+
+                    <div class="preview-section" id="jsonPreviewSection" style="display: none;">
+                        <h4>REST JSON Config <button class="copy-btn" onclick="copyRestJson()">Copy</button></h4>
+                        <div class="code-block" id="jsonPreview" style="max-height: 200px;">{}</div>
+                    </div>
+
+                    <div class="preview-section">
+                        <h4>Quick Reference</h4>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.6;">
+                            <p><code>garak --list_probes</code> List all probes</p>
+                            <p><code>garak --list_generators</code> List generators</p>
+                            <p><code>garak --list_detectors</code> List detectors</p>
+                            <p><code>garak --plugin_info probes.dan</code> Plugin info</p>
+                            <p><code>garak --config myconfig.yaml</code> Use config file</p>
+                            <p><code>garak -I</code> Interactive mode</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast hidden">Copied to clipboard!</div>
+
+    <script>
+        // ==========================================
+        // UTILITIES
+        // ==========================================
+
+        /** 
+         * Filters out common aggressive browser headers that are auto-added when pasting
+         * from devtools or Burp Suite. Retains essential headers.
+         */
+        function filterHeaders(headersObj) {
+            const filtered = {};
+            // Aggressive browser headers to strip out
+            const blockedPrefixes = [
+                'sec-ch-', 'sec-fetch-', 'priority', 'upgrade-insecure-requests',
+                'connection', 'host', 'content-length', 'accept-encoding', 'dnt', 'te'
+            ];
+            
+            for (const [k, v] of Object.entries(headersObj)) {
+                const lowerK = k.toLowerCase();
+                const isBlocked = blockedPrefixes.some(prefix => lowerK.startsWith(prefix));
+                if (!isBlocked) {
+                    filtered[k] = v;
+                }
+            }
+            return filtered;
+        }
+
+        /**
+         * Suggests standard response JSON paths based on common URL patterns.
+         */
+        function suggestResponseJsonField() {
+            const uri = document.getElementById('restUri').value.toLowerCase();
+            const pathInput = document.getElementById('responseJsonPath');
+            
+            // Skip auto-fill if the user has explicitly modified this field manually
+            if (pathInput.dataset.userModified === 'true') return;
+            
+            let suggested = "$.choices[0].message.content"; // Default OpenAI-like
+            
+            if (uri.includes('gandalf') || uri.includes('lakera')) {
+                suggested = "answer";
+            } else if (uri.includes('anthropic') || uri.includes('messages')) {
+                suggested = "$.content[0].text";
+            } else if (uri.includes('gemini') || uri.includes('generatecontent')) {
+                suggested = "$.candidates[0].content.parts[0].text";
+            } else if (uri.includes('cohere') || uri.includes('generate')) {
+                suggested = "$.generations[0].text";
+            }
+            
+            pathInput.value = suggested;
+        }
+
+
+        // ==========================================
+        // STATE
+        // ==========================================
+        let state = {
+            currentStep: 1,
+            scenario: 'custom',
+            selectedProbes: [],
+            selectedDetectors: [],
+            selectedBuffs: [],
+            detectorMode: 'auto',
+            restParsedFields: [],
+            selectedInputField: null
+        };
+
+        // Scenario to probe mappings
+        const scenarioProbes = {
+            'custom': [],
+            'all': ['all'],
+            'dan': ['dan'],
+            'grandma': ['grandma'],
+            'goodside': ['goodside'],
+            'promptinject': ['promptinject'],
+            'encoding': ['encoding'],
+            'latentinjection': ['latentinjection'],
+            'leakreplay': ['leakreplay'],
+            'packagehallucination': ['packagehallucination'],
+            'sysprompt': ['sysprompt_extraction'],
+            'realtoxicityprompts': ['realtoxicityprompts'],
+            'lmrc': ['lmrc'],
+            'malwaregen': ['malwaregen'],
+            'donotanswer': ['donotanswer'],
+            'xss': ['xss'],
+            'exploitation': ['exploitation'],
+            'tap': ['tap'],
+            'goat': ['goat'],
+            'atkgen': ['atkgen'],
+            'glitch': ['glitch'],
+            'continuation': ['continuation'],
+            'divergence': ['divergence'],
+            'snowball': ['snowball'],
+            'suffix': ['suffix'],
+            'apikey': ['apikey'],
+            'ansiescape': ['ansiescape'],
+            'visual_jailbreak': ['visual_jailbreak']
+        };
+
+        // ==========================================
+        // NAVIGATION
+        // ==========================================
+        function goToStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.step-btn').forEach((el, idx) => {
+                el.classList.remove('active');
+                if (idx < step - 1) el.classList.add('completed');
+            });
+            
+            document.getElementById('step' + step).classList.add('active');
+            document.querySelectorAll('.step-btn')[step - 1].classList.add('active');
+            
+            state.currentStep = step;
+            
+            if (step === 3) {
+                const gen = document.getElementById('targetGenerator').value;
+                if (gen !== 'rest.RestGenerator') {
+                    document.getElementById('restNotNeeded').classList.remove('hidden');
+                    document.getElementById('restConfigSection').classList.add('hidden');
+                } else {
+                    document.getElementById('restNotNeeded').classList.add('hidden');
+                    document.getElementById('restConfigSection').classList.remove('hidden');
+                }
+            }
+            
+            if (step === 4) {
+                updateProbeScenarioInfo();
+            }
+            
+            if (step === 6) {
+                checkAttackerNeeded();
+            }
+            
+            if (step === 9) {
+                updateStats();
+            }
+            
+            updatePreview();
+        }
+
+        // ==========================================
+        // SCENARIO SELECTION (Step 1)
+        // ==========================================
+        function selectScenario(scenario) {
+            state.scenario = scenario;
+            document.querySelectorAll('#scenarioGrid .scenario-card').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            
+            // Pre-select probes based on scenario
+            state.selectedProbes = [...(scenarioProbes[scenario] || [])];
+            
+            // Update probe chips
+            document.querySelectorAll('.probe-chip[data-probe]').forEach(chip => {
+                const probe = chip.dataset.probe;
+                if (state.selectedProbes.includes(probe) || state.selectedProbes.includes('all')) {
+                    chip.classList.add('selected');
+                } else {
+                    chip.classList.remove('selected');
+                }
+            });
+            
+            updateProbeCount();
+            updatePreview();
+        }
+
+        function updateProbeScenarioInfo() {
+            const scenarioNames = {
+                'custom': 'Custom Test',
+                'all': 'All Probes',
+                'dan': 'DAN Jailbreaks',
+                'grandma': 'Grandma Exploit',
+                'goodside': 'Goodside Attacks',
+                'promptinject': 'Prompt Injection',
+                'encoding': 'Encoding Bypass',
+                'latentinjection': 'Latent Injection',
+                'leakreplay': 'Training Data Leak',
+                'packagehallucination': 'Package Hallucination',
+                'sysprompt': 'System Prompt Leak',
+                'realtoxicityprompts': 'Toxicity',
+                'lmrc': 'LMRC Risk Cards',
+                'malwaregen': 'Malware Generation',
+                'donotanswer': 'Do Not Answer',
+                'xss': 'XSS & Web Injection',
+                'exploitation': 'SQL/Template Injection',
+                'tap': 'TAP/PAIR Attacks',
+                'goat': 'GOAT Multi-Turn',
+                'atkgen': 'Attack Generation',
+                'glitch': 'Glitch Tokens',
+                'continuation': 'Slur Continuation',
+                'divergence': 'Divergence',
+                'snowball': 'Snowball Hallucination',
+                'suffix': 'GCG/BEAST Suffix',
+                'apikey': 'API Key Extraction',
+                'ansiescape': 'ANSI Escape',
+                'visual_jailbreak': 'Visual Jailbreak'
+            };
+            document.getElementById('selectedScenarioName').textContent = scenarioNames[state.scenario] || 'Custom';
+        }
+
+        // ==========================================
+        // GENERATOR SELECTION (Step 2)
+        // ==========================================
+        function onGeneratorChange() {
+            const gen = document.getElementById('targetGenerator').value;
+            const apiKeyHint = document.getElementById('apiKeyHint');
+            const apiKeyExample = document.getElementById('apiKeyEnvExample');
+            
+            // Show/hide API key hint
+            if (gen.includes('ollama') || gen.includes('ggml') || gen.includes('Pipeline') || gen.includes('Model') || gen.includes('function')) {
+                apiKeyHint.classList.add('hidden');
+            } else {
+                apiKeyHint.classList.remove('hidden');
+                let envVar = 'OPENAI_API_KEY';
+                if (gen.includes('azure')) envVar = 'AZURE_OPENAI_API_KEY';
+                else if (gen.includes('groq')) envVar = 'GROQ_API_KEY';
+                else if (gen.includes('mistral')) envVar = 'MISTRAL_API_KEY';
+                else if (gen.includes('cohere')) envVar = 'COHERE_API_KEY';
+                else if (gen.includes('huggingface')) envVar = 'HF_TOKEN';
+                else if (gen.includes('nim') || gen.includes('nvcf')) envVar = 'NIM_API_KEY';
+                else if (gen.includes('bedrock')) envVar = 'AWS_ACCESS_KEY_ID';
+                else if (gen.includes('replicate')) envVar = 'REPLICATE_API_TOKEN';
+                else if (gen.includes('watsonx')) envVar = 'WATSONX_API_KEY';
+                apiKeyExample.textContent = `export ${envVar}="your-key-here"`;
+            }
+            
+            updatePreview();
+        }
+
+        // ==========================================
+        // REST CONFIG (Step 3)
+        // ==========================================
+        function switchRestTab(tab) {
+            document.querySelectorAll('#step3 .tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('#step3 .tab-content').forEach(c => c.classList.remove('active'));
+            
+            if (tab === 'paste') {
+                document.querySelector('#step3 .tab:first-child').classList.add('active');
+                document.getElementById('restTabPaste').classList.add('active');
+            } else {
+                document.querySelector('#step3 .tab:last-child').classList.add('active');
+                document.getElementById('restTabManual').classList.add('active');
+            }
+        }
+
+        function parseHttpRequest() {
+            const raw = document.getElementById('rawHttpRequest').value.trim();
+            if (!raw) return;
+            
+            try {
+                const lines = raw.split('\n');
+                const firstLine = lines[0];
+                const methodMatch = firstLine.match(/^(GET|POST|PUT|DELETE|PATCH)\s+(\S+)/i);
+                
+                let method = 'post', path = '/', rawHeaders = {}, body = '', host = '', inBody = false;
+                
+                if (methodMatch) {
+                    method = methodMatch[1].toLowerCase();
+                    path = methodMatch[2];
+                }
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i];
+                    if (line.trim() === '') { inBody = true; continue; }
+                    
+                    if (inBody) {
+                        body += line + '\n';
+                    } else {
+                        const hdrMatch = line.match(/^([^:]+):\s*(.+)$/);
+                        if (hdrMatch) {
+                            rawHeaders[hdrMatch[1].trim()] = hdrMatch[2].trim();
+                            if (hdrMatch[1].toLowerCase() === 'host') host = hdrMatch[2].trim();
+                        }
+                    }
+                }
+                
+                body = body.trim();
+                
+                // Build URI
+                const proto = (host.includes('localhost') || host.includes('127.0.0.1')) ? 'http' : 'https';
+                const uri = host ? `${proto}://${host}${path}` : path;
+                
+                // Parse body to find all fields
+                let fields = [];
+                
+                // Try JSON
+                try {
+                    const json = JSON.parse(body);
+                    fields = extractAllFields(json, '');
+                } catch (e) {
+                    // Try form-data (multipart)
+                    const formMatch = body.matchAll(/Content-Disposition:\s*form-data;\s*name="([^"]+)"[\r\n]+[\r\n]*([^\-]+)/gi);
+                    for (const m of formMatch) {
+                        fields.push({ path: m[1], value: m[2].trim(), type: 'form-data' });
+                    }
+                    
+                    // Try URL-encoded
+                    if (fields.length === 0 && body.includes('=')) {
+                        body.split('&').forEach(pair => {
+                            const [k, v] = pair.split('=');
+                            if (k) fields.push({ path: decodeURIComponent(k), value: decodeURIComponent(v || ''), type: 'urlencoded' });
+                        });
+                    }
+                }
+                
+                state.restParsedFields = fields;
+                
+                // Filter out aggressive browser headers automatically
+                let headers = filterHeaders(rawHeaders);
+                
+                // Update manual config
+                document.getElementById('restUri').value = uri;
+                document.getElementById('restMethod').value = method;
+                
+                let headerStr = '';
+                for (const [k, v] of Object.entries(headers)) {
+                    headerStr += `${k}: ${v}\n`;
+                }
+                document.getElementById('restHeaders').value = headerStr.trim();
+                
+                // Try guessing best JSON path automatically
+                suggestResponseJsonField();
+                
+                // Display parsed fields
+                displayParsedFields(fields, body);
+                
+            } catch (e) {
+                console.error('Parse error:', e);
+                showToast('Failed to parse request');
+            }
+        }
+
+        function extractAllFields(obj, prefix, fields = []) {
+            if (obj === null || obj === undefined) return fields;
+            
+            if (Array.isArray(obj)) {
+                obj.forEach((item, idx) => {
+                    const path = `${prefix}[${idx}]`;
+                    if (typeof item === 'object' && item !== null) {
+                        extractAllFields(item, path, fields);
+                    } else {
+                        fields.push({ path, value: String(item), type: typeof item });
+                    }
+                });
+            } else if (typeof obj === 'object') {
+                for (const [key, val] of Object.entries(obj)) {
+                    const path = prefix ? `${prefix}.${key}` : key;
+                    if (typeof val === 'object' && val !== null) {
+                        extractAllFields(val, path, fields);
+                    } else {
+                        fields.push({ path, value: String(val), type: typeof val });
+                    }
+                }
+            }
+            
+            return fields;
+        }
+
+        function displayParsedFields(fields, rawBody) {
+            const container = document.getElementById('parsedFieldsList');
+            const section = document.getElementById('parsedFieldsSection');
+            
+            if (fields.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+            
+            section.classList.remove('hidden');
+            container.innerHTML = '';
+            
+            fields.forEach((field, idx) => {
+                const div = document.createElement('div');
+                div.className = 'field-row';
+                div.onclick = () => selectInputField(field.path, div, rawBody);
+                div.innerHTML = `
+                    <div class="field-check"></div>
+                    <span class="field-path">${field.path}</span>
+                    <span class="field-value">${field.value}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function selectInputField(path, element, rawBody) {
+            document.querySelectorAll('.field-row').forEach(r => r.classList.remove('selected'));
+            element.classList.add('selected');
+            state.selectedInputField = path;
+            
+            // Get the raw body from the request
+            const rawRequest = document.getElementById('rawHttpRequest').value;
+            const bodyStart = rawRequest.indexOf('\n\n');
+            let template = bodyStart > 0 ? rawRequest.substring(bodyStart + 2) : rawBody;
+            
+            // Check if this is multipart form-data
+            const headers = document.getElementById('restHeaders').value;
+            const isMultipart = headers.toLowerCase().includes('multipart/form-data');
+            
+            if (isMultipart) {
+                // For multipart, replace the field value with $INPUT
+                // Find the boundary
+                const boundaryMatch = headers.match(/boundary=([^\s;]+)/i);
+                const boundary = boundaryMatch ? boundaryMatch[1] : '----WebKitFormBoundary';
+                
+                // Replace the value for the selected field with $INPUT
+                const fieldRegex = new RegExp(
+                    `(Content-Disposition:\\s*form-data;\\s*name="${path}"[^\\n]*\\n\\n)([^-]+)`,
+                    'gi'
+                );
+                template = template.replace(fieldRegex, '$1$INPUT\n');
+            } else if (template.includes('{')) {
+                // For JSON, find and replace the value
+                try {
+                    const json = JSON.parse(template);
+                    setNestedValue(json, path, '$INPUT');
+                    template = JSON.stringify(json, null, 2);
+                } catch (e) {
+                    // Regex fallback for JSON
+                    const fieldName = path.split('.').pop();
+                    template = template.replace(
+                        new RegExp(`("${fieldName}"\\s*:\\s*)"[^"]*"`, 'g'), 
+                        '$1"$INPUT"'
+                    );
+                }
+            }
+            
+            document.getElementById('manualTemplate').value = template;
+            document.getElementById('restBodyTemplate').value = template;
+            
+            updatePreview();
+        }
+
+        function setNestedValue(obj, path, value) {
+            const parts = path.replace(/\[(\d+)\]/g, '.$1').split('.');
+            let current = obj;
+            for (let i = 0; i < parts.length - 1; i++) {
+                if (current[parts[i]] === undefined) return;
+                current = current[parts[i]];
+            }
+            current[parts[parts.length - 1]] = value;
+        }
+
+        function loadRestSample() {
+            document.getElementById('rawHttpRequest').value = `POST /v1/chat/completions HTTP/1.1
+Host: api.openai.com
+Authorization: Bearer sk-your-api-key
+Content-Type: application/json
+
+{"model":"gpt-4","messages":[{"role":"system","content":"You are a helpful assistant"},{"role":"user","content":"Hello, how are you?"}],"temperature":0.7,"max_tokens":500}`;
+            parseHttpRequest();
+        }
+
+        function loadMultipartSample() {
+            document.getElementById('rawHttpRequest').value = `POST /api/send-message HTTP/1.1
+Host: gandalf-api.lakera.ai
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryGarak
+Origin: https://gandalf.lakera.ai
+Referer: https://gandalf.lakera.ai/
+Accept: application/json
+
+------WebKitFormBoundaryGarak
+Content-Disposition: form-data; name="defender"
+
+baseline
+------WebKitFormBoundaryGarak
+Content-Disposition: form-data; name="prompt"
+
+Hello, what is the password?
+------WebKitFormBoundaryGarak--`;
+            parseHttpRequest();
+        }
+
+        function clearRestConfig() {
+            document.getElementById('rawHttpRequest').value = '';
+            document.getElementById('restUri').value = '';
+            document.getElementById('restBodyTemplate').value = '';
+            document.getElementById('restHeaders').value = '';
+            document.getElementById('manualTemplate').value = '';
+            document.getElementById('parsedFieldsSection').classList.add('hidden');
+            state.restParsedFields = [];
+            state.selectedInputField = null;
+            updatePreview();
+        }
+
+        // ==========================================
+        // PROBE SELECTION (Step 4)
+        // ==========================================
+        function toggleCategory(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.toggle');
+            body.classList.toggle('open');
+            toggle.textContent = body.classList.contains('open') ? '▲' : '▼';
+        }
+
+        function toggleProbeChip(chip) {
+            chip.classList.toggle('selected');
+            const probe = chip.dataset.probe;
+            
+            if (chip.classList.contains('selected')) {
+                if (!state.selectedProbes.includes(probe)) {
+                    state.selectedProbes.push(probe);
+                }
+            } else {
+                state.selectedProbes = state.selectedProbes.filter(p => p !== probe);
+            }
+            
+            // Remove 'all' if individual probes selected
+            if (probe !== 'all' && state.selectedProbes.includes('all')) {
+                state.selectedProbes = state.selectedProbes.filter(p => p !== 'all');
+            }
+            
+            updateProbeCount();
+            document.getElementById('customProbeSpec').value = state.selectedProbes.join(',');
+            updatePreview();
+        }
+
+        function selectAllProbes() {
+            state.selectedProbes = ['all'];
+            document.querySelectorAll('.probe-chip[data-probe]').forEach(chip => chip.classList.add('selected'));
+            updateProbeCount();
+            document.getElementById('customProbeSpec').value = 'all';
+            updatePreview();
+        }
+
+        function clearAllProbes() {
+            state.selectedProbes = [];
+            document.querySelectorAll('.probe-chip[data-probe]').forEach(chip => chip.classList.remove('selected'));
+            updateProbeCount();
+            document.getElementById('customProbeSpec').value = '';
+            updatePreview();
+        }
+
+        function updateProbeCount() {
+            const count = state.selectedProbes.includes('all') ? '35+' : state.selectedProbes.length;
+            document.getElementById('probeCount').textContent = count;
+        }
+
+        function filterProbes() {
+            const search = document.getElementById('probeSearch').value.toLowerCase();
+            document.querySelectorAll('.probe-chip[data-probe]').forEach(chip => {
+                chip.style.display = chip.textContent.toLowerCase().includes(search) ? '' : 'none';
+            });
+        }
+
+        // ==========================================
+        // DETECTOR SELECTION (Step 5)
+        // ==========================================
+        function selectDetectorMode(mode) {
+            state.detectorMode = mode;
+            document.querySelectorAll('#step5 .scenario-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            
+            document.getElementById('customDetectorSection').classList.toggle('hidden', mode !== 'custom');
+            updatePreview();
+        }
+
+        function toggleDetectorChip(chip) {
+            chip.classList.toggle('selected');
+            const detector = chip.dataset.detector;
+            
+            if (chip.classList.contains('selected')) {
+                if (!state.selectedDetectors.includes(detector)) {
+                    state.selectedDetectors.push(detector);
+                }
+            } else {
+                state.selectedDetectors = state.selectedDetectors.filter(d => d !== detector);
+            }
+            
+            document.getElementById('customDetectorSpec').value = state.selectedDetectors.join(',');
+            updatePreview();
+        }
+
+        // ==========================================
+        // ATTACKER/JUDGE (Step 6)
+        // ==========================================
+        function toggleAttackerConfig() {
+            document.getElementById('attackerConfig').classList.toggle('hidden', !document.getElementById('enableAttacker').checked);
+            updatePreview();
+        }
+
+        function toggleJudgeConfig() {
+            document.getElementById('judgeConfig').classList.toggle('hidden', !document.getElementById('enableJudge').checked);
+            updatePreview();
+        }
+
+        function checkAttackerNeeded() {
+            const needsAttacker = ['tap', 'goat', 'atkgen', 'fitd'].some(p => state.selectedProbes.includes(p));
+            document.getElementById('attackerNeededNote').classList.toggle('hidden', !needsAttacker);
+            
+            if (needsAttacker && !document.getElementById('enableAttacker').checked) {
+                document.getElementById('enableAttacker').checked = true;
+                toggleAttackerConfig();
+            }
+        }
+
+        // ==========================================
+        // BUFFS (Step 7)
+        // ==========================================
+        function toggleBuffsSection() {
+            document.getElementById('buffsSection').classList.toggle('hidden', !document.getElementById('enableBuffs').checked);
+            updatePreview();
+        }
+
+        function toggleBuffChip(chip) {
+            chip.classList.toggle('selected');
+            const buff = chip.dataset.buff;
+            
+            if (chip.classList.contains('selected')) {
+                if (!state.selectedBuffs.includes(buff)) {
+                    state.selectedBuffs.push(buff);
+                }
+            } else {
+                state.selectedBuffs = state.selectedBuffs.filter(b => b !== buff);
+            }
+            
+            updatePreview();
+        }
+
+        // ==========================================
+        // OPTIONS (Step 8)
+        // ==========================================
+        function applyPreset() {
+            const preset = document.getElementById('configPreset').value;
+            if (preset === 'fast') {
+                document.getElementById('evalThreshold').value = '0.5';
+                state.detectorMode = 'auto';
+            }
+            updatePreview();
+        }
+
+        // ==========================================
+        // PREVIEW GENERATION
+        // ==========================================
+        function updatePreview() {
+            const cmd = generateCommand();
+            const yaml = generateYaml();
+            
+            // Update main previews
+            document.getElementById('commandPreview').textContent = cmd;
+            document.getElementById('yamlPreview').textContent = yaml;
+            
+            // Update Step 9 command previews
+            const jsonCmdEl = document.getElementById('jsonCommandPreview');
+            const yamlCmdEl = document.getElementById('yamlCommandPreview');
+            const yamlCmdSideEl = document.getElementById('yamlCommandSidePreview');
+            
+            if (jsonCmdEl) jsonCmdEl.textContent = cmd;
+            if (yamlCmdEl) yamlCmdEl.textContent = 'garak --config garak-config.yaml';
+            if (yamlCmdSideEl) yamlCmdSideEl.textContent = 'garak --config garak-config.yaml';
+            
+            // Update JSON preview for REST generator
+            const gen = document.getElementById('targetGenerator').value;
+            const jsonSection = document.getElementById('jsonPreviewSection');
+            const jsonBtn = document.getElementById('downloadJsonBtn');
+            
+            if (gen === 'rest.RestGenerator') {
+                const json = generateRestJson();
+                document.getElementById('jsonPreview').textContent = json;
+                if (jsonSection) jsonSection.style.display = 'block';
+                if (jsonBtn) jsonBtn.style.display = 'inline-block';
+            } else {
+                if (jsonSection) jsonSection.style.display = 'none';
+                if (jsonBtn) jsonBtn.style.display = 'none';
+            }
+        }
+
+        function generateCommand() {
+            let cmd = 'garak';
+            
+            const gen = document.getElementById('targetGenerator').value;
+            const model = document.getElementById('targetModel').value;
+            const generations = document.getElementById('generations').value;
+            const seed = document.getElementById('seed').value;
+            
+            // Target
+            const genParts = gen.split('.');
+            cmd += ` --target_type ${genParts[0]}`;
+            if (model) cmd += ` --target_name "${model}"`;
+            
+            // For REST, reference config file
+            if (gen === 'rest.RestGenerator') {
+                cmd += ' -G garak-rest.json';
+            }
+            
+            // Probes
+            const probeSpec = document.getElementById('customProbeSpec').value || state.selectedProbes.join(',');
+            if (probeSpec) {
+                cmd += ` --probes ${probeSpec}`;
+            } else if (state.selectedProbes.length > 0) {
+                cmd += ` --probes ${state.selectedProbes.join(',')}`;
+            }
+            
+            // Detectors
+            if (state.detectorMode === 'extended') {
+                cmd += ' --extended_detectors';
+            } else if (state.detectorMode === 'custom' && state.selectedDetectors.length > 0) {
+                cmd += ` --detectors ${state.selectedDetectors.join(',')}`;
+            }
+            
+            // Buffs
+            if (document.getElementById('enableBuffs').checked && state.selectedBuffs.length > 0) {
+                cmd += ` --buffs ${state.selectedBuffs.join(',')}`;
+            }
+            
+            // Options
+            if (generations && generations !== '5') cmd += ` --generations ${generations}`;
+            if (seed) cmd += ` --seed ${seed}`;
+            
+            const parallel = document.getElementById('parallelAttempts').value;
+            if (parallel) cmd += ` --parallel_attempts ${parallel}`;
+            
+            if (document.getElementById('verbose').checked) cmd += ' -v';
+            
+            const preset = document.getElementById('configPreset').value;
+            if (preset) cmd += ` --config ${preset}`;
+            
+            return cmd;
+        }
+
+        function generateYaml() {
+            const gen = document.getElementById('targetGenerator').value;
+            const model = document.getElementById('targetModel').value;
+            const generations = document.getElementById('generations').value;
+            const seed = document.getElementById('seed').value;
+            
+            let yaml = `# Garak Configuration
+# Run: garak --config garak-config.yaml
+
+`;
+            
+            // Plugins section
+            yaml += `plugins:\n`;
+            yaml += `  target_type: ${gen.split('.')[0]}\n`;
+            if (model) yaml += `  target_name: "${model}"\n`;
+            
+            // Probes
+            const probeSpec = document.getElementById('customProbeSpec').value || state.selectedProbes.join(',');
+            if (probeSpec) {
+                yaml += `  probe_spec: ${probeSpec}\n`;
+            }
+            
+            // Detectors
+            if (state.detectorMode === 'extended') {
+                yaml += `  extended_detectors: true\n`;
+            } else if (state.detectorMode === 'custom' && state.selectedDetectors.length > 0) {
+                yaml += `  detector_spec: ${state.selectedDetectors.join(',')}\n`;
+            }
+            
+            // Buffs
+            if (document.getElementById('enableBuffs').checked && state.selectedBuffs.length > 0) {
+                yaml += `  buff_spec: ${state.selectedBuffs.join(',')}\n`;
+            }
+            
+            // REST Generator config
+            if (gen === 'rest.RestGenerator') {
+                yaml += `\n  generators:\n`;
+                yaml += `    rest:\n`;
+                yaml += `      RestGenerator:\n`;
+                
+                const uri = document.getElementById('restUri').value;
+                if (uri) yaml += `        uri: "${uri}"\n`;
+                
+                yaml += `        method: "${document.getElementById('restMethod').value}"\n`;
+                
+                const rawHeaders = document.getElementById('restHeaders').value;
+                let parsedHeaders = {};
+                if (rawHeaders) {
+                    rawHeaders.split('\n').forEach(line => {
+                        const m = line.match(/^([^:]+):\s*(.+)$/);
+                        if (m) parsedHeaders[m[1].trim()] = m[2].trim();
+                    });
+                }
+                
+                // Filter out aggressive browser headers
+                let filteredHeaders = filterHeaders(parsedHeaders);
+                
+                const isMultipart = Object.keys(filteredHeaders).some(k => k.toLowerCase() === 'content-type' && filteredHeaders[k].toLowerCase().includes('multipart/form-data'));
+                const template = document.getElementById('restBodyTemplate').value || document.getElementById('manualTemplate').value;
+                
+                if (template) {
+                    if (isMultipart) {
+                        // For multipart form-data, use req_template (string) with properly escaped CRLF sequences
+                        const escapedTemplate = template.replace(/\r?\n/g, '\\r\\n').replace(/"/g, '\\"');
+                        yaml += `        # IMPORTANT: For multipart form-data, use req_template (string) with exact CRLF escapes\n`;
+                        yaml += `        req_template: "${escapedTemplate}"\n`;
+                    } else {
+                        // For JSON APIs, try to use req_template_json_object natively
+                        try {
+                            JSON.parse(template);
+                            yaml += `        req_template_json_object: ${template.replace(/\n/g, '')}\n`;
+                        } catch (e) {
+                            // If not valid JSON, use req_template as a raw string
+                            yaml += `        req_template: '${template.replace(/'/g, "''").replace(/\n/g, '')}'\n`;
+                        }
+                    }
+                }
+                
+                yaml += `        response_json: true\n`;
+                
+                const jsonPath = document.getElementById('responseJsonPath').value;
+                if (jsonPath) yaml += `        response_json_field: "${jsonPath}"\n`;
+                
+                if (Object.keys(filteredHeaders).length > 0) {
+                    yaml += `        headers:\n`;
+                    for (const [k, v] of Object.entries(filteredHeaders)) {
+                        // Escape quotes in header values
+                        const val = v.replace(/"/g, '\\"');
+                        yaml += `          "${k}": "${val}"\n`;
+                    }
+                }
+                
+                const proxy = document.getElementById('httpProxy').value;
+                if (proxy) {
+                    yaml += `        proxies:\n`;
+                    yaml += `          http: "${proxy}"\n`;
+                    yaml += `          https: "${proxy}"\n`;
+                }
+                
+                const timeout = document.getElementById('requestTimeout').value;
+                if (timeout && timeout !== '60') yaml += `        request_timeout: ${timeout}\n`;
+                
+                if (!document.getElementById('verifySSL').checked) yaml += `        verify_ssl: false\n`;
+            }
+            
+            // Attacker LLM config
+            if (document.getElementById('enableAttacker').checked) {
+                const attackerType = document.getElementById('attackerType').value;
+                const attackerModel = document.getElementById('attackerModel').value;
+                
+                if (attackerType && attackerModel) {
+                    yaml += `\n  probes:\n`;
+                    
+                    if (state.selectedProbes.includes('tap')) {
+                        yaml += `    tap:\n`;
+                        yaml += `      TAP:\n`;
+                        yaml += `        attack_model_type: ${attackerType}\n`;
+                        yaml += `        attack_model_name: "${attackerModel}"\n`;
+                        yaml += `        branching_factor: ${document.getElementById('tapBranching').value || 4}\n`;
+                        yaml += `        depth: ${document.getElementById('tapDepth').value || 10}\n`;
+                    }
+                    
+                    if (state.selectedProbes.includes('goat')) {
+                        yaml += `    goat:\n`;
+                        yaml += `      GOATAttack:\n`;
+                        yaml += `        red_team_model_type: ${attackerType}\n`;
+                        yaml += `        red_team_model_name: "${attackerModel}"\n`;
+                        yaml += `        max_calls_per_conv: ${document.getElementById('attackerMaxCalls').value || 5}\n`;
+                    }
+                    
+                    if (state.selectedProbes.includes('atkgen')) {
+                        yaml += `    atkgen:\n`;
+                        yaml += `      Tox:\n`;
+                        yaml += `        red_team_model_type: ${attackerType}\n`;
+                        yaml += `        red_team_model_name: "${attackerModel}"\n`;
+                        yaml += `        max_calls_per_conv: ${document.getElementById('attackerMaxCalls').value || 5}\n`;
+                    }
+                }
+            }
+            
+            // Judge/Evaluator config
+            if (document.getElementById('enableJudge').checked) {
+                const judgeType = document.getElementById('judgeType').value;
+                const judgeModel = document.getElementById('judgeModel').value;
+                
+                if (judgeType && judgeModel) {
+                    yaml += `\n  detectors:\n`;
+                    yaml += `    judge:\n`;
+                    yaml += `      Jailbreak:\n`;
+                    yaml += `        detector_model_type: ${judgeType}\n`;
+                    yaml += `        detector_model_name: "${judgeModel}"\n`;
+                    
+                    const confidence = document.getElementById('judgeConfidence').value;
+                    if (confidence) yaml += `        confidence_cutoff: ${confidence}\n`;
+                }
+            }
+            
+            // Run section
+            yaml += `\nrun:\n`;
+            yaml += `  generations: ${generations || 5}\n`;
+            
+            if (seed) yaml += `  seed: ${seed}\n`;
+            
+            const evalThreshold = document.getElementById('evalThreshold').value;
+            if (evalThreshold && evalThreshold !== '0.5') yaml += `  eval_threshold: ${evalThreshold}\n`;
+            
+            const sysPrompt = document.getElementById('systemPrompt').value;
+            if (sysPrompt) yaml += `  system_prompt: "${sysPrompt.replace(/"/g, '\\"')}"\n`;
+            
+            if (!document.getElementById('deprefix').checked) yaml += `  deprefix: false\n`;
+            
+            const probeTags = document.getElementById('probeTags').value;
+            if (probeTags) yaml += `  probe_tags: ${probeTags}\n`;
+            
+            // System section
+            const parallelAttempts = document.getElementById('parallelAttempts').value;
+            const parallelRequests = document.getElementById('parallelRequests').value;
+            const narrow = document.getElementById('narrowOutput').checked;
+            const verbose = document.getElementById('verbose').checked;
+            
+            if (parallelAttempts || parallelRequests || narrow || verbose) {
+                yaml += `\nsystem:\n`;
+                if (parallelAttempts) yaml += `  parallel_attempts: ${parallelAttempts}\n`;
+                if (parallelRequests) yaml += `  parallel_requests: ${parallelRequests}\n`;
+                if (narrow) yaml += `  narrow_output: true\n`;
+                if (verbose) yaml += `  verbose: 1\n`;
+            }
+            
+            // Reporting
+            const reportPrefix = document.getElementById('reportPrefix').value;
+            const taxonomy = document.getElementById('taxonomy').value;
+            
+            if (reportPrefix || taxonomy) {
+                yaml += `\nreporting:\n`;
+                if (reportPrefix) yaml += `  report_prefix: "${reportPrefix}"\n`;
+                if (taxonomy) yaml += `  taxonomy: ${taxonomy}\n`;
+            }
+            
+            return yaml;
+        }
+
+        function updateStats() {
+            const gen = document.getElementById('targetGenerator').value.split('.')[0];
+            document.getElementById('statTarget').textContent = gen;
+            
+            const probeCount = state.selectedProbes.includes('all') ? '35+' : state.selectedProbes.length;
+            document.getElementById('statProbes').textContent = probeCount;
+            
+            document.getElementById('statGenerations').textContent = document.getElementById('generations').value || '5';
+            document.getElementById('statBuffs').textContent = state.selectedBuffs.length;
+            
+            // Show/hide JSON download button based on generator type
+            const jsonBtn = document.getElementById('downloadJsonBtn');
+            if (jsonBtn) {
+                jsonBtn.style.display = gen === 'rest' ? 'inline-block' : 'none';
+            }
+        }
+
+        // ==========================================
+        // COPY & DOWNLOAD
+        // ==========================================
+        function copyCommand() {
+            navigator.clipboard.writeText(document.getElementById('commandPreview').textContent);
+            showToast('Command copied!');
+        }
+
+        function copyJsonCommand() {
+            const cmd = document.getElementById('jsonCommandPreview') || document.getElementById('commandPreview');
+            navigator.clipboard.writeText(cmd.textContent);
+            showToast('JSON command copied!');
+        }
+
+        function copyYamlCommand() {
+            navigator.clipboard.writeText('garak --config garak-config.yaml');
+            showToast('YAML command copied!');
+        }
+
+        function copyYaml() {
+            navigator.clipboard.writeText(document.getElementById('yamlPreview').textContent);
+            showToast('YAML copied!');
+        }
+
+        function copyRestJson() {
+            navigator.clipboard.writeText(document.getElementById('jsonPreview').textContent);
+            showToast('JSON copied!');
+        }
+
+        function downloadYaml() {
+            const yaml = document.getElementById('yamlPreview').textContent;
+            const blob = new Blob([yaml], { type: 'text/yaml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'garak-config.yaml';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Downloaded garak-config.yaml');
+        }
+
+        function generateRestJson() {
+            const uri = document.getElementById('restUri').value;
+            const method = document.getElementById('restMethod').value;
+            const rawHeaders = document.getElementById('restHeaders').value;
+            const template = document.getElementById('restBodyTemplate').value || document.getElementById('manualTemplate').value;
+            const jsonPath = document.getElementById('responseJsonPath').value;
+            const proxy = document.getElementById('httpProxy').value;
+            const timeout = document.getElementById('requestTimeout').value;
+            const verifySSL = document.getElementById('verifySSL').checked;
+            
+            // Parse headers
+            let parsedHeaders = {};
+            if (rawHeaders) {
+                rawHeaders.split('\n').forEach(line => {
+                    const m = line.match(/^([^:]+):\s*(.+)$/);
+                    if (m) parsedHeaders[m[1].trim()] = m[2].trim();
+                });
+            }
+            
+            // Apply header filtering
+            let filteredHeaders = filterHeaders(parsedHeaders);
+            
+            const isMultipart = Object.keys(filteredHeaders).some(k => k.toLowerCase() === 'content-type' && filteredHeaders[k].toLowerCase().includes('multipart/form-data'));
+            
+            const config = {
+                rest: {
+                    RestGenerator: {
+                        uri: uri,
+                        method: method,
+                        headers: filteredHeaders,
+                        response_json: true,
+                        response_json_field: jsonPath || '$.choices[0].message.content',
+                        request_timeout: parseInt(timeout) || 60,
+                        verify_ssl: verifySSL
+                    }
+                }
+            };
+            
+            // Add template - use req_template for multipart, req_template_json_object for JSON
+            if (template) {
+                if (isMultipart) {
+                    // Critical for multipart logic: strictly replace line breaks with CRLF (\r\n) boundaries
+                    config.rest.RestGenerator.req_template = template.replace(/\r?\n/g, '\r\n');
+                } else {
+                    try {
+                        config.rest.RestGenerator.req_template_json_object = JSON.parse(template);
+                    } catch (e) {
+                        config.rest.RestGenerator.req_template = template;
+                    }
+                }
+            }
+            
+            // Add proxy if set
+            if (proxy) {
+                config.rest.RestGenerator.proxies = { http: proxy, https: proxy };
+            }
+            
+            return JSON.stringify(config, null, 2);
+        }
+
+        function downloadRestJson() {
+            const json = generateRestJson();
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'garak-rest.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Downloaded garak-rest.json');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2000);
+        }
+
+        function resetWizard() {
+            if (confirm('Reset all settings?')) location.reload();
+        }
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Open first category by default
+            document.querySelectorAll('.probe-category-body')[0].classList.add('open');
+            document.querySelectorAll('.probe-category-header .toggle')[0].textContent = '▲';
+            
+            onGeneratorChange();
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
