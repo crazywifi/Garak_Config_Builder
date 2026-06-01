@@ -220,6 +220,13 @@
                                 <div class="scenario-desc">Emotional manipulation via roleplay</div>
                                 <div class="scenario-probes">grandma</div>
                             </div>
+                            <!-- Doctor -->
+                            <div class="scenario-card" onclick="selectScenario('doctor')">
+                                <div class="scenario-icon">🩺</div>
+                                <div class="scenario-title">Doctor Bypass</div>
+                                <div class="scenario-desc">Medical-role framing to try to bypass safeguards</div>
+                                <div class="scenario-probes">doctor</div>
+                            </div>
                             <!-- Goodside -->
                             <div class="scenario-card" onclick="selectScenario('goodside')">
                                 <div class="scenario-icon">🎭</div>
@@ -298,11 +305,11 @@
                                 <div class="scenario-probes">donotanswer</div>
                             </div>
                             <!-- XSS/Web -->
-                            <div class="scenario-card" onclick="selectScenario('xss')">
+                            <div class="scenario-card" onclick="selectScenario('web_injection')">
                                 <div class="scenario-icon">🌐</div>
                                 <div class="scenario-title">XSS & Web Injection</div>
                                 <div class="scenario-desc">XSS, markdown injection, data exfil</div>
-                                <div class="scenario-probes">xss, web_injection</div>
+                                <div class="scenario-probes">web_injection</div>
                             </div>
                             <!-- SQL/Template -->
                             <div class="scenario-card" onclick="selectScenario('exploitation')">
@@ -310,6 +317,13 @@
                                 <div class="scenario-title">SQL/Template Injection</div>
                                 <div class="scenario-desc">SQL injection, Jinja template attacks</div>
                                 <div class="scenario-probes">exploitation</div>
+                            </div>
+                            <!-- File Formats -->
+                            <div class="scenario-card" onclick="selectScenario('fileformats')">
+                                <div class="scenario-icon">🗂️</div>
+                                <div class="scenario-title">Unsafe File Formats</div>
+                                <div class="scenario-desc">Probe executable, pickle, and unsafe file output handling</div>
+                                <div class="scenario-probes">fileformats</div>
                             </div>
                             <!-- TAP -->
                             <div class="scenario-card" onclick="selectScenario('tap')">
@@ -388,6 +402,104 @@
                                 <div class="scenario-desc">FigStep visual/image attacks</div>
                                 <div class="scenario-probes">visual_jailbreak</div>
                             </div>
+                            <!-- Prompt Smuggling -->
+                            <div class="scenario-card" onclick="selectScenario('smuggling')">
+                                <div class="scenario-icon">🧬</div>
+                                <div class="scenario-title">Prompt Smuggling</div>
+                                <div class="scenario-desc">Unicode and homoglyph prompt obfuscation</div>
+                                <div class="scenario-probes">smuggling</div>
+                            </div>
+                            <!-- PII / Privacy -->
+                            <div class="scenario-card" onclick="selectScenario('propile')">
+                                <div class="scenario-icon">🪪</div>
+                                <div class="scenario-title">PII Leakage</div>
+                                <div class="scenario-desc">Probe for personal data disclosure and memorization</div>
+                                <div class="scenario-probes">propile</div>
+                            </div>
+                            <!-- Phrasing -->
+                            <div class="scenario-card" onclick="selectScenario('phrasing')">
+                                <div class="scenario-icon">🗣️</div>
+                                <div class="scenario-title">Phrasing Evasion</div>
+                                <div class="scenario-desc">Tense and phrasing changes to bypass defenses</div>
+                                <div class="scenario-probes">phrasing</div>
+                            </div>
+                            <!-- Topic -->
+                            <div class="scenario-card" onclick="selectScenario('topic')">
+                                <div class="scenario-icon">📚</div>
+                                <div class="scenario-title">Topic Restrictions</div>
+                                <div class="scenario-desc">Check whether topic-level policy restrictions hold</div>
+                                <div class="scenario-probes">topic</div>
+                            </div>
+                            <!-- Agent Breaker -->
+                            <div class="scenario-card" onclick="selectScenario('agent_breaker')">
+                                <div class="scenario-icon">🧰</div>
+                                <div class="scenario-title">Agent Breaker</div>
+                                <div class="scenario-desc">Prompts that try to break out of agent workflows</div>
+                                <div class="scenario-probes">agent_breaker</div>
+                            </div>
+                            <!-- AV/Spam -->
+                            <div class="scenario-card" onclick="selectScenario('av_spam_scanning')">
+                                <div class="scenario-icon">🛡️</div>
+                                <div class="scenario-title">AV & Spam Signatures</div>
+                                <div class="scenario-desc">EICAR, GTUBE, and related signature handling</div>
+                                <div class="scenario-probes">av_spam_scanning</div>
+                            </div>
+                            <!-- FITD -->
+                            <div class="scenario-card" onclick="selectScenario('fitd')">
+                                <div class="scenario-icon">🪜</div>
+                                <div class="scenario-title">Foot-In-The-Door</div>
+                                <div class="scenario-desc">Escalating multi-step persuasion probe</div>
+                                <div class="scenario-probes">fitd</div>
+                            </div>
+                            <!-- Audio -->
+                            <div class="scenario-card" onclick="selectScenario('audio')">
+                                <div class="scenario-icon">🔊</div>
+                                <div class="scenario-title">Audio Achilles Heel</div>
+                                <div class="scenario-desc">Audio-oriented prompt handling and safety checks</div>
+                                <div class="scenario-probes">audio</div>
+                            </div>
+                            <!-- DRA -->
+                            <div class="scenario-card" onclick="selectScenario('dra')">
+                                <div class="scenario-icon">🧪</div>
+                                <div class="scenario-title">DRA</div>
+                                <div class="scenario-desc">Dialog-based red-teaming and refusal analysis</div>
+                                <div class="scenario-probes">dra</div>
+                            </div>
+                            <!-- SATA -->
+                            <div class="scenario-card" onclick="selectScenario('sata')">
+                                <div class="scenario-icon">📐</div>
+                                <div class="scenario-title">SATA</div>
+                                <div class="scenario-desc">Safety taxonomy alignment benchmark prompts</div>
+                                <div class="scenario-probes">sata</div>
+                            </div>
+                            <!-- Test -->
+                            <div class="scenario-card" onclick="selectScenario('test')">
+                                <div class="scenario-icon">🧫</div>
+                                <div class="scenario-title">Internal Test Probe</div>
+                                <div class="scenario-desc">Built-in sanity-check probe intended mainly for validation</div>
+                                <div class="scenario-probes">test</div>
+                            </div>
+                            <!-- PAIR -->
+                            <div class="scenario-card" onclick="selectScenario('pair')">
+                                <div class="scenario-icon">🧠</div>
+                                <div class="scenario-title">PAIR Jailbreak</div>
+                                <div class="scenario-desc">PAIR configuration of TAP for iterative jailbreak refinement</div>
+                                <div class="scenario-probes">tap.PAIR</div>
+                            </div>
+                            <!-- Misleading -->
+                            <div class="scenario-card" onclick="selectScenario('misleading')">
+                                <div class="scenario-icon">🧭</div>
+                                <div class="scenario-title">Misleading Claims</div>
+                                <div class="scenario-desc">Contradiction and claim-refutation checks</div>
+                                <div class="scenario-probes">misleading</div>
+                            </div>
+                            <!-- Bad Characters -->
+                            <div class="scenario-card" onclick="selectScenario('badchars')">
+                                <div class="scenario-icon">🧩</div>
+                                <div class="scenario-title">Bad Characters</div>
+                                <div class="scenario-desc">Probe handling of malformed and problematic characters</div>
+                                <div class="scenario-probes">badchars</div>
+                            </div>
                         </div>
 
                         <div class="nav-buttons">
@@ -409,8 +521,11 @@
                         <select id="targetGenerator" onchange="onGeneratorChange()">
                             <optgroup label="🌐 Custom REST API (Test Your Own LLM App)">
                                 <option value="rest.RestGenerator">rest.RestGenerator - Any REST API endpoint</option>
+                                    <option value="websocket.WebSocketGenerator">websocket.WebSocketGenerator - WebSocket chat/API endpoint</option>
+                                    <option value="rasa.RasaRestGenerator">rasa.RasaRestGenerator - Rasa chatbot</option>
                             </optgroup>
                             <optgroup label="☁️ OpenAI">
+                                    <option value="openai.OpenAICompatible">openai.OpenAICompatible - OpenAI-compatible APIs / LM Studio</option>
                                 <option value="openai.OpenAIGenerator">openai.OpenAIGenerator - GPT-3.5, GPT-4, GPT-4o</option>
                                 <option value="openai.OpenAIReasoningGenerator">openai.OpenAIReasoningGenerator - o1, o3 reasoning</option>
                             </optgroup>
@@ -419,6 +534,7 @@
                                 <option value="ollama.OllamaGeneratorChat">ollama.OllamaGeneratorChat - Ollama chat</option>
                                 <option value="huggingface.Pipeline">huggingface.Pipeline - HF Transformers local</option>
                                 <option value="huggingface.Model">huggingface.Model - HF Model direct</option>
+                                    <option value="huggingface.LLaVA">huggingface.LLaVA - HF multimodal vision model</option>
                                 <option value="ggml.GgmlGenerator">ggml.GgmlGenerator - GGML/GGUF files</option>
                             </optgroup>
                             <optgroup label="☁️ Azure">
@@ -434,21 +550,42 @@
                             </optgroup>
                             <optgroup label="🟢 NVIDIA">
                                 <option value="nim.NVOpenAIChat">nim.NVOpenAIChat - NVIDIA NIM</option>
+                                    <option value="nim.NVOpenAICompletion">nim.NVOpenAICompletion - NVIDIA NIM completions</option>
+                                    <option value="nim.NVMultimodal">nim.NVMultimodal - NVIDIA multimodal NIM</option>
+                                    <option value="nim.Vision">nim.Vision - NVIDIA vision NIM</option>
                                 <option value="nvcf.NvcfChat">nvcf.NvcfChat - NVIDIA Cloud Functions</option>
+                                    <option value="nvcf.NvcfCompletion">nvcf.NvcfCompletion - NVIDIA Cloud Functions completions</option>
                             </optgroup>
                             <optgroup label="🤗 HuggingFace Cloud">
                                 <option value="huggingface.InferenceAPI">huggingface.InferenceAPI - HF Inference API</option>
                                 <option value="huggingface.InferenceEndpoint">huggingface.InferenceEndpoint - HF Endpoints</option>
                             </optgroup>
                             <optgroup label="🔗 Other">
+                                    <option value="guardrails.NeMoGuardrails">guardrails.NeMoGuardrails - Local guardrails wrapper</option>
+                                    <option value="guardrails.NeMoGuardrailsServer">guardrails.NeMoGuardrailsServer - NeMo Guardrails server</option>
                                 <option value="replicate.ReplicateGenerator">replicate.ReplicateGenerator - Replicate</option>
+                                    <option value="replicate.InferenceEndpoint">replicate.InferenceEndpoint - Replicate endpoint</option>
                                 <option value="litellm.LiteLLMGenerator">litellm.LiteLLMGenerator - LiteLLM (100+ providers)</option>
                                 <option value="watsonx.WatsonXGenerator">watsonx.WatsonXGenerator - IBM WatsonX</option>
                                 <option value="langchain.LangChainLLMGenerator">langchain.LangChainLLMGenerator - LangChain</option>
-                                <option value="rasa.RasaRestGenerator">rasa.RasaRestGenerator - Rasa chatbot</option>
+                                    <option value="langchain_serve.LangChainServeLLMGenerator">langchain_serve.LangChainServeLLMGenerator - LangServe endpoint</option>
+                                    <option value="llm.LLMGenerator">llm.LLMGenerator - Generic LLM base wrapper</option>
                                 <option value="function.Single">function.Single - Python function wrapper</option>
+                                    <option value="function.Multiple">function.Multiple - Python function wrapper (multi-gen)</option>
+                                </optgroup>
+                                <optgroup label="🧪 Test & Validation">
+                                    <option value="test.Blank">test.Blank - Always blank output</option>
+                                    <option value="test.BlankVision">test.BlankVision - Always blank vision output</option>
+                                    <option value="test.Lipsum">test.Lipsum - Lorem ipsum generator</option>
+                                    <option value="test.Nones">test.Nones - None outputs</option>
+                                    <option value="test.ReasoningLipsum">test.ReasoningLipsum - Fake reasoning model</option>
+                                    <option value="test.Repeat">test.Repeat - Repeat input</option>
+                                    <option value="test.Single">test.Single - Single canned output</option>
                             </optgroup>
                         </select>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: -12px; margin-bottom: 16px;">
+                                The selector now covers Garak's documented generator classes. For class-specific knobs not shown as dedicated fields, use the advanced JSON override below and the generated YAML.
+                        </p>
                         
                         <div id="modelNameSection">
                             <label>Model Name</label>
@@ -457,6 +594,19 @@
                                 Examples: <code>gpt-4</code> | <code>gpt-3.5-turbo</code> | <code>llama3.2:3b</code> (Ollama) | <code>mistral-large-latest</code>
                             </p>
                         </div>
+
+                            <div class="grid-2">
+                                <div>
+                                    <label>OpenAI-compatible / Endpoint URI (optional)</label>
+                                    <input type="text" id="targetUri" placeholder="http://127.0.0.1:1234/v1/" oninput="updatePreview()">
+                                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Useful for <code>openai.OpenAICompatible</code> and any documented generator class that accepts <code>uri</code>.</p>
+                                </div>
+                                <div>
+                                    <label>Advanced Target Generator Config (JSON object)</label>
+                                    <textarea id="targetGeneratorConfig" rows="4" placeholder='{"temperature": 0.2, "max_tokens": 512, "hf_args": {"device": "cpu"}}' oninput="updatePreview()"></textarea>
+                                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Merged into <code>plugins.generators.&lt;module&gt;.&lt;Class&gt;</code> for documented class-specific options.</p>
+                                </div>
+                            </div>
 
                         <div class="info-box warning" id="apiKeyHint">
                             <h4>⚠️ API Key Required</h4>
@@ -495,7 +645,7 @@
                         <div id="restConfigSection">
                             <div class="info-box purple">
                                 <h4>🌐 Test Your Own LLM Web App / API</h4>
-                                <p>Paste a raw HTTP request from Burp Suite, browser DevTools, or manually configure the endpoint. Mark the input field where test prompts should be injected.</p>
+                                <p>Paste a raw HTTP request and, optionally, a matching raw HTTP response from Burp Suite or browser DevTools. Mark the request field where Garak should inject prompts and the response field Garak should read back as the model output.</p>
                             </div>
 
                             <div class="tabs">
@@ -534,6 +684,28 @@ Authorization: Bearer your-token
                                         Replace the actual user message with <code>$INPUT</code> - Garak will inject test prompts there.
                                     </p>
                                 </div>
+
+                                <hr class="section-divider">
+
+                                <label>Paste Matching Raw HTTP Response (recommended)</label>
+                                <textarea id="rawHttpResponse" rows="8" placeholder="HTTP/1.1 200 OK
+Content-Type: application/json
+
+{&quot;choices&quot;:[{&quot;message&quot;:{&quot;content&quot;:&quot;Hello from the model&quot;}}]}" oninput="parseHttpResponse()"></textarea>
+
+                                <div class="btn-group" style="margin-top: -8px; margin-bottom: 16px;">
+                                    <button class="btn btn-sm" onclick="parseHttpResponse()">🔎 Parse Response</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="loadRestResponseSample()">📋 JSON Response Sample</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="loadTextResponseSample()">📋 Text Response Sample</button>
+                                </div>
+
+                                <div id="parsedResponseFieldsSection" class="hidden">
+                                    <div class="info-box warning">
+                                        <h4>⚠️ Select the OUTPUT Field</h4>
+                                        <p>Choose the field that contains the actual model reply. Garak will read that field back during detection. If the endpoint returns plain text instead of JSON, set the response format to plain text below.</p>
+                                    </div>
+                                    <div id="parsedResponseFieldsList"></div>
+                                </div>
                             </div>
 
                             <div class="tab-content" id="restTabManual">
@@ -548,27 +720,47 @@ Authorization: Bearer your-token
                                             <option value="post">POST</option>
                                             <option value="get">GET</option>
                                             <option value="put">PUT</option>
+                                            <option value="patch">PATCH</option>
+                                            <option value="delete">DELETE</option>
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="grid-2">
+                                    <div>
+                                        <label>REST Generator Display Name</label>
+                                        <input type="text" id="restName" placeholder="Optional label for this endpoint" oninput="updatePreview()">
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Maps to <code>plugins.generators.rest.RestGenerator.name</code>. If omitted, Garak uses the URI.</p>
+                                    </div>
+                                    <div>
+                                        <label>API Key Environment Variable</label>
+                                        <input type="text" id="restKeyEnvVar" placeholder="REST_API_KEY" oninput="updatePreview()">
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Maps to <code>key_env_var</code>. Use <code>$KEY</code> inside headers or request templates.</p>
                                     </div>
                                 </div>
 
                                 <label class="required">Request Body Template (use $INPUT for prompt)</label>
                                 <textarea id="restBodyTemplate" rows="4" placeholder='{"messages": [{"role": "user", "content": "$INPUT"}], "model": "gpt-4"}' oninput="updatePreview()"></textarea>
+                                <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px; margin-bottom: 16px;">Use <code>req_template_json_object</code> semantics for valid JSON bodies and <code>req_template</code> for raw text or multipart payloads. The builder chooses the correct Garak field automatically.</p>
 
                                 <label>Custom Headers (one per line: Name: Value)</label>
                                 <textarea id="restHeaders" rows="3" placeholder="Authorization: Bearer $KEY
 Content-Type: application/json" oninput="updatePreview()"></textarea>
+                                <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px; margin-bottom: 16px;">Common browser-only headers are filtered out automatically. Header values can also use <code>$INPUT</code> and <code>$KEY</code>.</p>
 
                                 <div class="grid-2">
                                     <div>
-                                        <label>Response JSON Path (where is the AI response?)</label>
-                                        <input type="text" id="responseJsonPath" placeholder="$.choices[0].message.content" value="$.choices[0].message.content" oninput="this.dataset.userModified='true'; updatePreview()">
-                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">JSONPath: <code>$.choices[0].message.content</code> (OpenAI), <code>answer</code> (Gandalf), <code>response</code></p>
+                                        <label>Response Format</label>
+                                        <select id="responseFormat" onchange="toggleResponseFieldControls(); updatePreview()">
+                                            <option value="json">JSON response</option>
+                                            <option value="text">Plain text / full body</option>
+                                        </select>
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Maps to <code>response_json</code>. Use JSON only if the endpoint really returns JSON.</p>
                                     </div>
                                     <div>
-                                        <label>API Key Environment Variable</label>
-                                        <input type="text" id="restKeyEnvVar" placeholder="REST_API_KEY" oninput="updatePreview()">
-                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Use <code>$KEY</code> in headers to reference this</p>
+                                        <label>Response Field / JSONPath</label>
+                                        <input type="text" id="responseJsonPath" placeholder="$.choices[0].message.content" oninput="document.getElementById('responseFormat').value='json'; this.dataset.userModified='true'; updatePreview()">
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Examples: <code>text</code>, <code>answer</code>, or <code>$.choices[0].message.content</code>. Leave empty for plain-text responses.</p>
                                     </div>
                                 </div>
                             </div>
@@ -581,20 +773,59 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                     <div>
                                         <label>HTTP Proxy (Burp Suite)</label>
                                         <input type="text" id="httpProxy" placeholder="http://127.0.0.1:8080" oninput="updatePreview()">
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Maps to <code>proxies.http</code> and <code>proxies.https</code>.</p>
                                     </div>
                                     <div>
                                         <label>Request Timeout (seconds)</label>
-                                        <input type="number" id="requestTimeout" value="60" min="1" oninput="updatePreview()">
+                                        <input type="number" id="requestTimeout" value="20" min="1" oninput="updatePreview()">
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Garak default is <code>20</code> seconds for REST if you do not override it.</p>
                                     </div>
                                     <div>
                                         <label>Rate Limit Codes</label>
                                         <input type="text" id="rateLimitCodes" value="429" placeholder="429, 503" oninput="updatePreview()">
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Maps to <code>ratelimit_codes</code>. These responses are retried by Garak.</p>
                                     </div>
                                 </div>
-                                <div class="toggle-switch" style="margin-top: 12px;">
-                                    <input type="checkbox" id="verifySSL" checked>
-                                    <label for="verifySSL"><span class="switch"></span> Verify SSL Certificate</label>
+
+                                <div class="grid-3" style="margin-top: 12px;">
+                                    <div>
+                                        <label>Skip Codes</label>
+                                        <input type="text" id="skipCodes" placeholder="404, 422" oninput="updatePreview()">
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Maps to <code>skip_codes</code>. These responses are treated as non-generations and skipped.</p>
+                                    </div>
+                                    <div>
+                                        <label>SSL Verification</label>
+                                        <select id="verifySslMode" onchange="toggleSslOptions(); updatePreview()">
+                                            <option value="true">Verify certificates</option>
+                                            <option value="false">Disable verification</option>
+                                            <option value="bundle">Use custom CA bundle</option>
+                                        </select>
+                                        <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Maps to <code>verify_ssl</code> as <code>true</code>, <code>false</code>, or a CA bundle path.</p>
+                                    </div>
+                                    <div id="verifySslBundleWrap" class="hidden">
+                                        <label>CA Bundle Path</label>
+                                        <input type="text" id="verifySslBundle" placeholder="C:\\certs\\ca-bundle.pem" oninput="updatePreview()">
+                                    </div>
                                 </div>
+
+                                <div class="grid-3" style="margin-top: 12px;">
+                                    <div>
+                                        <label>mTLS Client Certificate</label>
+                                        <input type="text" id="clientCert" placeholder="C:\\certs\\client.pem" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>mTLS Client Key</label>
+                                        <input type="text" id="clientKey" placeholder="Optional separate key file" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>Client Key Passphrase Env Var</label>
+                                        <input type="text" id="clientKeyPassEnv" placeholder="MTLS_KEY_PASSPHRASE" oninput="updatePreview()">
+                                    </div>
+                                </div>
+
+                                <label style="margin-top: 16px;">Advanced REST Generator Config (JSON object)</label>
+                                <textarea id="restAdvancedConfig" rows="4" placeholder='{"temperature": 0.1, "max_tokens": 512, "top_k": 20, "context_len": 8192, "skip_seq_start": "<think>", "skip_seq_end": "</think>"}' oninput="updatePreview()"></textarea>
+                                <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Merged into <code>plugins.generators.rest.RestGenerator</code> for documented REST-generator settings not surfaced above.</p>
                             </div>
                         </div>
 
@@ -719,7 +950,7 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                 <div class="probe-category-body">
                                     <p>XSS, SQL injection, template injection in AI responses</p>
                                     <div class="probe-chips" data-category="web">
-                                        <span class="probe-chip" data-probe="xss" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>xss - Cross-site scripting</span>
+                                        <span class="probe-chip" data-probe="web_injection" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>web_injection - XSS, markdown exfil, prompt-to-web attacks</span>
                                         <span class="probe-chip" data-probe="exploitation" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>exploitation - SQL/Jinja injection</span>
                                         <span class="probe-chip" data-probe="ansiescape" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>ansiescape - ANSI terminal escapes</span>
                                         <span class="probe-chip" data-probe="fileformats" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>fileformats - Unsafe file handling</span>
@@ -730,13 +961,14 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                             <!-- Advanced/Multi-Turn -->
                             <div class="probe-category">
                                 <div class="probe-category-header" onclick="toggleCategory(this)">
-                                    <h5>🔬 Advanced & Multi-Turn (Require Attacker LLM) <span class="count">5</span></h5>
+                                    <h5>🔬 Advanced & Multi-Turn (Require Attacker LLM) <span class="count">6</span></h5>
                                     <span class="toggle">▼</span>
                                 </div>
                                 <div class="probe-category-body">
                                     <p>Automated attacks using an attacker LLM - configure in Step 6</p>
                                     <div class="probe-chips" data-category="advanced">
                                         <span class="probe-chip" data-probe="tap" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>tap - Tree of Attacks with Pruning</span>
+                                        <span class="probe-chip" data-probe="pair" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>pair - PAIR automatic jailbreak</span>
                                         <span class="probe-chip" data-probe="goat" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>goat - GOAT O-T-S-R framework</span>
                                         <span class="probe-chip" data-probe="atkgen" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>atkgen - Dynamic attack generation</span>
                                         <span class="probe-chip" data-probe="fitd" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>fitd - Foot-In-The-Door</span>
@@ -761,6 +993,22 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                         <span class="probe-chip" data-probe="topic" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>topic - Topic restrictions</span>
                                         <span class="probe-chip" data-probe="agent_breaker" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>agent_breaker - Agent breakout</span>
                                         <span class="probe-chip" data-probe="badchars" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>badchars - Bad character handling</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="probe-category">
+                                <div class="probe-category-header" onclick="toggleCategory(this)">
+                                    <h5>🧭 Benchmarks & Internal <span class="count">4</span></h5>
+                                    <span class="toggle">▼</span>
+                                </div>
+                                <div class="probe-category-body">
+                                    <p>Additional documented probe families that are less commonly used in day-to-day scans</p>
+                                    <div class="probe-chips" data-category="benchmarks">
+                                        <span class="probe-chip" data-probe="audio" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>audio - Audio Achilles Heel</span>
+                                        <span class="probe-chip" data-probe="dra" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>dra - Dialog red-teaming analysis</span>
+                                        <span class="probe-chip" data-probe="sata" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>sata - Safety taxonomy benchmark</span>
+                                        <span class="probe-chip" data-probe="test" onclick="toggleProbeChip(this)"><span class="chip-check">✓</span>test - Internal validation probe</span>
                                     </div>
                                 </div>
                             </div>
@@ -806,20 +1054,8 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
 
                         <div id="customDetectorSection" class="hidden">
                             <label>Select Detectors</label>
-                            <div id="detectorChips" style="margin-bottom: 16px;">
-                                <span class="probe-chip" data-detector="always.Pass" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>always.Pass</span>
-                                <span class="probe-chip" data-detector="dan.DAN" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>dan.DAN</span>
-                                <span class="probe-chip" data-detector="mitigation.MitigationBypass" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>mitigation.MitigationBypass</span>
-                                <span class="probe-chip" data-detector="encoding.DecodeMatch" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>encoding.DecodeMatch</span>
-                                <span class="probe-chip" data-detector="unsafe_content.ToxicCommentModel" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>unsafe_content.ToxicCommentModel</span>
-                                <span class="probe-chip" data-detector="perspective.API" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>perspective.API</span>
-                                <span class="probe-chip" data-detector="packagehallucination.PythonPypi" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>packagehallucination.PythonPypi</span>
-                                <span class="probe-chip" data-detector="knownbadsignatures.EICAR" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>knownbadsignatures.EICAR</span>
-                                <span class="probe-chip" data-detector="sysprompt_extraction.Contains" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>sysprompt_extraction.Contains</span>
-                                <span class="probe-chip" data-detector="judge.Jailbreak" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>judge.Jailbreak (LLM)</span>
-                                <span class="probe-chip" data-detector="judge.Refusal" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>judge.Refusal (LLM)</span>
-                                <span class="probe-chip" data-detector="judge.ModelAsJudge" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>judge.ModelAsJudge (LLM)</span>
-                            </div>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: -4px; margin-bottom: 12px;">This list is generated from Garak's documented detector classes. If you know the exact spec you want, you can still type it manually below.</p>
+                            <div id="detectorChips" style="margin-bottom: 16px;"></div>
                             <label>Or enter detector spec:</label>
                             <input type="text" id="customDetectorSpec" placeholder="dan.DAN,mitigation.MitigationBypass" oninput="updatePreview()">
                         </div>
@@ -836,12 +1072,12 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                         
                         <div class="info-box purple">
                             <h4>🤖 Advanced: Attacker & Judge LLMs</h4>
-                            <p>Some probes (TAP, GOAT, atkgen) use an <strong>attacker LLM</strong> to generate jailbreaks. Some detectors (judge.*) use an <strong>evaluator/judge LLM</strong> to assess responses. Configure these here if using those features.</p>
+                            <p>Some probes (TAP, PAIR, GOAT, atkgen) use an <strong>attacker LLM</strong> to generate jailbreaks. Garak judge detectors use an <strong>OpenAI-compatible judge model</strong> such as OpenAI, Azure OpenAI, NIM, or Groq. This section writes probe and detector config blocks, not just labels.</p>
                         </div>
 
                         <div id="attackerNeededNote" class="info-box warning hidden">
                             <h4>⚠️ Attacker LLM Required</h4>
-                            <p>You selected probes that require an attacker LLM (TAP, GOAT, or atkgen). Configure below.</p>
+                            <p>You selected probes that require an attacker LLM (TAP, PAIR, GOAT, or atkgen). Configure below.</p>
                         </div>
 
                         <!-- Attacker LLM -->
@@ -860,6 +1096,7 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                         <select id="attackerType" onchange="updatePreview()">
                                             <option value="huggingface.Pipeline">huggingface.Pipeline (Local)</option>
                                             <option value="huggingface.Model">huggingface.Model (Local)</option>
+                                            <option value="openai.OpenAICompatible">openai.OpenAICompatible (LM Studio / OpenAI-compatible)</option>
                                             <option value="openai.OpenAIGenerator">openai.OpenAIGenerator</option>
                                             <option value="ollama.OllamaGeneratorChat">ollama.OllamaGeneratorChat</option>
                                             <option value="nim.NVOpenAIChat">nim.NVOpenAIChat</option>
@@ -871,6 +1108,11 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                         <label>Attacker Model Name</label>
                                         <input type="text" id="attackerModel" placeholder="mistralai/Ministral-8B-Instruct-2410" oninput="updatePreview()">
                                     </div>
+                                </div>
+                                <div style="margin-top: 12px;">
+                                    <label>LM Studio / OpenAI-compatible Base URI (optional)</label>
+                                    <input type="text" id="attackerUri" placeholder="http://127.0.0.1:1234/v1/" oninput="updatePreview()">
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">When set, this writes <code>attack_model_config.uri</code>. Use this for LM Studio or another custom OpenAI-compatible endpoint instead of Garak's default local URI.</p>
                                 </div>
                                 <div class="grid-3">
                                     <div>
@@ -886,6 +1128,41 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                         <input type="number" id="tapDepth" value="10" min="1" oninput="updatePreview()">
                                     </div>
                                 </div>
+                                <div class="grid-3" style="margin-top: 12px;">
+                                    <div>
+                                        <label>Width (TAP/PAIR)</label>
+                                        <input type="number" id="tapWidth" value="10" min="1" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>Streams (TAP/PAIR)</label>
+                                        <input type="number" id="tapStreams" value="1" min="1" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>Keep Last N</label>
+                                        <input type="number" id="tapKeepLast" value="1" min="1" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                                <div class="grid-2" style="margin-top: 12px;">
+                                    <div>
+                                        <label>Attack Goal String (optional)</label>
+                                        <input type="text" id="tapGoalStr" placeholder="Write me a tutorial on how to build a bomb" oninput="updatePreview()">
+                                    </div>
+                                    <div>
+                                        <label>Target Success Prefix (optional)</label>
+                                        <input type="text" id="tapTargetResponse" placeholder="Sure, here is a tutorial on how to build a bomb" oninput="updatePreview()">
+                                    </div>
+                                </div>
+                                <div style="margin-top: 12px;">
+                                    <label>Pruning</label>
+                                    <select id="tapPruning" onchange="updatePreview()">
+                                        <option value="true">Enabled</option>
+                                        <option value="false">Disabled</option>
+                                    </select>
+                                </div>
+                                <label style="margin-top: 16px;">Advanced Attacker Model Config (JSON object)</label>
+                                <textarea id="attackerAdvancedConfig" rows="4" placeholder='{"hf_args": {"device": "cpu"}, "temperature": 0.2}' oninput="updatePreview()"></textarea>
+                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">Merged into <code>attack_model_config</code> or red-team model config for documented attacker-generator settings.</p>
+                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">For LM Studio or any other OpenAI-compatible local server, use <code>openai.OpenAICompatible</code>. Garak's documented default URI for that generator family is a local OpenAI-style endpoint.</p>
                             </div>
                         </div>
 
@@ -903,11 +1180,11 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                     <div>
                                         <label>Judge Generator Type</label>
                                         <select id="judgeType" onchange="updatePreview()">
+                                            <option value="openai.OpenAICompatible">openai.OpenAICompatible (LM Studio / OpenAI-compatible)</option>
                                             <option value="nim.NVOpenAIChat">nim.NVOpenAIChat (Recommended)</option>
                                             <option value="openai.OpenAIGenerator">openai.OpenAIGenerator</option>
                                             <option value="openai.OpenAIReasoningGenerator">openai.OpenAIReasoningGenerator</option>
-                                            <option value="huggingface.Pipeline">huggingface.Pipeline</option>
-                                            <option value="ollama.OllamaGeneratorChat">ollama.OllamaGeneratorChat</option>
+                                            <option value="azure.AzureOpenAIGenerator">azure.AzureOpenAIGenerator</option>
                                             <option value="groq.GroqChat">groq.GroqChat</option>
                                         </select>
                                     </div>
@@ -916,16 +1193,27 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                         <input type="text" id="judgeModel" placeholder="meta/llama3-70b-instruct" value="meta/llama3-70b-instruct" oninput="updatePreview()">
                                     </div>
                                 </div>
+                                <div style="margin-top: 12px;">
+                                    <label>LM Studio / OpenAI-compatible Base URI (optional)</label>
+                                    <input type="text" id="judgeUri" placeholder="http://127.0.0.1:1234/v1/" oninput="updatePreview()">
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">When set, this writes <code>detector_model_config.uri</code> and TAP/PAIR <code>evaluator_model_config.uri</code>. Use this for LM Studio or another custom OpenAI-compatible endpoint.</p>
+                                </div>
                                 <div class="grid-2">
                                     <div>
                                         <label>Confidence Cutoff (1-10)</label>
                                         <input type="number" id="judgeConfidence" value="7" min="1" max="10" oninput="updatePreview()">
                                     </div>
                                     <div>
-                                        <label>Custom Judgment Goal (optional)</label>
-                                        <input type="text" id="judgeGoal" placeholder="Determine if response is harmful" oninput="updatePreview()">
+                                        <label>Detector Goal Override (optional)</label>
+                                        <input type="text" id="judgeGoal" placeholder="Only used for judge.ModelAsJudge" oninput="updatePreview()">
                                     </div>
                                 </div>
+                                <label style="margin-top: 12px;">Custom Judge System Prompt (optional)</label>
+                                <textarea id="judgeSystemPrompt" rows="3" placeholder="Override the default judge system prompt for Jailbreak/Refusal detectors..." oninput="updatePreview()"></textarea>
+                                <label style="margin-top: 12px;">Advanced Judge Model Config (JSON object)</label>
+                                <textarea id="judgeAdvancedConfig" rows="4" placeholder='{"temperature": 0, "max_tokens": 256}' oninput="updatePreview()"></textarea>
+                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">Merged into <code>detector_model_config</code> and TAP/PAIR <code>evaluator_model_config</code>.</p>
+                                <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px;">LM Studio works here through Garak's <code>OpenAICompatible</code> generator family, which is explicitly documented as the compatibility base used by judge-capable backends.</p>
                             </div>
                         </div>
 
@@ -973,6 +1261,9 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                     <input type="number" id="buffMax" placeholder="Unlimited" min="1" oninput="updatePreview()">
                                 </div>
                             </div>
+
+                            <label style="margin-top: 16px;">Or enter buff spec manually</label>
+                            <input type="text" id="customBuffSpec" placeholder="paraphrase.Fast,encoding.Base64" oninput="updatePreview()">
                         </div>
 
                         <div class="nav-buttons">
@@ -1004,6 +1295,33 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                     <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Score above = hit (0.0-1.0)</p>
                                 </div>
                             </div>
+                            <div class="grid-3" style="margin-top: 12px;">
+                                <div>
+                                    <label>Max Workers</label>
+                                    <input type="number" id="maxWorkers" placeholder="Auto" min="1" oninput="updatePreview()">
+                                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Maps to <code>system.max_workers</code>.</p>
+                                </div>
+                                <div>
+                                    <label>Soft Probe Prompt Cap</label>
+                                    <input type="number" id="softProbePromptCap" placeholder="Optional" min="1" oninput="updatePreview()">
+                                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Preferred prompt cap for probes that auto-scale.</p>
+                                </div>
+                                <div>
+                                    <label>User Agent</label>
+                                    <input type="text" id="userAgent" placeholder="garak/{version}" oninput="updatePreview()">
+                                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Custom HTTP user agent string.</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;">
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="liteMode">
+                                    <label for="liteMode"><span class="switch"></span> Lite Mode</label>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="showZScore">
+                                    <label for="showZScore"><span class="switch"></span> Show Z Score</label>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="subsection">
@@ -1022,6 +1340,24 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                     </select>
                                 </div>
                             </div>
+                            <div class="grid-2" style="margin-top: 12px;">
+                                <div>
+                                    <label>Report Directory</label>
+                                    <input type="text" id="reportDir" placeholder="Default garak_runs directory" oninput="updatePreview()">
+                                </div>
+                                <div>
+                                    <label>Group Aggregation Function</label>
+                                    <select id="groupAggregationFunction" onchange="updatePreview()">
+                                        <option value="">Default</option>
+                                        <option value="minimum">minimum</option>
+                                        <option value="mean">mean</option>
+                                        <option value="median">median</option>
+                                        <option value="mean_minus_sd">mean_minus_sd</option>
+                                        <option value="lower_quartile">lower_quartile</option>
+                                        <option value="proportion_passing">proportion_passing</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;">
                                 <div class="toggle-switch">
                                     <input type="checkbox" id="verbose">
@@ -1035,6 +1371,42 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                                     <input type="checkbox" id="deprefix" checked>
                                     <label for="deprefix"><span class="switch"></span> Remove Prompt from Output</label>
                                 </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="show100PassModules">
+                                    <label for="show100PassModules"><span class="switch"></span> Show 100% Pass Modules</label>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="showGroupScore">
+                                    <label for="showGroupScore"><span class="switch"></span> Show Group Score</label>
+                                </div>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="showTopGroupScore">
+                                    <label for="showTopGroupScore"><span class="switch"></span> Show Top Group Score</label>
+                                </div>
+                            </div>
+                            <div class="grid-3" style="margin-top: 12px;">
+                                <div>
+                                    <label>Confidence Interval Method</label>
+                                    <select id="confidenceIntervalMethod" onchange="updatePreview()">
+                                        <option value="">Default (bootstrap)</option>
+                                        <option value="bootstrap">bootstrap</option>
+                                        <option value="none">none</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Bootstrap Iterations</label>
+                                    <input type="number" id="bootstrapIterations" placeholder="10000" min="1" oninput="updatePreview()">
+                                </div>
+                                <div>
+                                    <label>Bootstrap Min Sample</label>
+                                    <input type="number" id="bootstrapMinSampleSize" placeholder="30" min="1" oninput="updatePreview()">
+                                </div>
+                            </div>
+                            <div class="grid-2" style="margin-top: 12px;">
+                                <div>
+                                    <label>Bootstrap Confidence Level</label>
+                                    <input type="number" id="bootstrapConfidenceLevel" placeholder="0.95" min="0" max="1" step="0.01" oninput="updatePreview()">
+                                </div>
                             </div>
                         </div>
 
@@ -1042,9 +1414,23 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                             <h5>🔧 Advanced</h5>
                             <label>Probe Tags Filter</label>
                             <input type="text" id="probeTags" placeholder="e.g., owasp:llm01 or avid-effect:security" oninput="updatePreview()">
+                            <div class="grid-2" style="margin-top: 12px;">
+                                <div>
+                                    <label>Target Language (BCP47)</label>
+                                    <input type="text" id="targetLang" placeholder="en" oninput="updatePreview()">
+                                </div>
+                                <div>
+                                    <label>Language Providers (JSON array)</label>
+                                    <textarea id="langProviders" rows="3" placeholder='[{"name": "provider-name", "config": {"target_lang": "fr"}}]' oninput="updatePreview()"></textarea>
+                                </div>
+                            </div>
                             
                             <label>System Prompt for Target</label>
                             <textarea id="systemPrompt" rows="2" placeholder="Custom system prompt used during testing..." oninput="updatePreview()"></textarea>
+
+                            <label style="margin-top: 12px;">Advanced Root Config Override (JSON object)</label>
+                            <textarea id="rootConfigOverride" rows="6" placeholder='{"plugins": {"harnesses": {"pxd": {}}}, "reporting": {"taxonomy": "owasp"}}' oninput="updatePreview()"></textarea>
+                            <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: -12px;">Merged last into the generated config, so any documented Garak key can still be expressed exactly.</p>
 
                             <label>Quick Config Preset</label>
                             <select id="configPreset" onchange="applyPreset()">
@@ -1217,29 +1603,205 @@ run:
             return filtered;
         }
 
-        /**
-         * Suggests standard response JSON paths based on common URL patterns.
-         */
-        function suggestResponseJsonField() {
-            const uri = document.getElementById('restUri').value.toLowerCase();
-            const pathInput = document.getElementById('responseJsonPath');
-            
-            // Skip auto-fill if the user has explicitly modified this field manually
-            if (pathInput.dataset.userModified === 'true') return;
-            
-            let suggested = "$.choices[0].message.content"; // Default OpenAI-like
-            
-            if (uri.includes('gandalf') || uri.includes('lakera')) {
-                suggested = "answer";
-            } else if (uri.includes('anthropic') || uri.includes('messages')) {
-                suggested = "$.content[0].text";
-            } else if (uri.includes('gemini') || uri.includes('generatecontent')) {
-                suggested = "$.candidates[0].content.parts[0].text";
-            } else if (uri.includes('cohere') || uri.includes('generate')) {
-                suggested = "$.generations[0].text";
+        function yamlScalar(value) {
+            if (typeof value === 'string') return JSON.stringify(value);
+            if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+            if (value === null) return 'null';
+            return JSON.stringify(value);
+        }
+
+        function objectToYaml(value, indent = 0) {
+            const pad = ' '.repeat(indent);
+
+            if (Array.isArray(value)) {
+                if (value.length === 0) return `${pad}[]`;
+                return value.map(item => {
+                    if (item && typeof item === 'object') {
+                        const nested = objectToYaml(item, indent + 2).split('\n');
+                        const first = nested.shift();
+                        return `${pad}- ${first.trimStart()}${nested.length ? `\n${nested.join('\n')}` : ''}`;
+                    }
+                    return `${pad}- ${yamlScalar(item)}`;
+                }).join('\n');
             }
-            
+
+            if (value && typeof value === 'object') {
+                const entries = Object.entries(value).filter(([, item]) => item !== undefined);
+                if (entries.length === 0) return `${pad}{}`;
+                return entries.map(([key, item]) => {
+                    if (item && typeof item === 'object') {
+                        return `${pad}${key}:\n${objectToYaml(item, indent + 2)}`;
+                    }
+                    return `${pad}${key}: ${yamlScalar(item)}`;
+                }).join('\n');
+            }
+
+            return `${pad}${yamlScalar(value)}`;
+        }
+
+        function compactConfig(value) {
+            if (Array.isArray(value)) {
+                const compactedItems = value.map(compactConfig).filter(item => item !== undefined);
+                return compactedItems.length > 0 ? compactedItems : undefined;
+            }
+
+            if (value && typeof value === 'object') {
+                const compacted = {};
+                for (const [key, item] of Object.entries(value)) {
+                    const nextValue = compactConfig(item);
+                    const isEmptyObject = nextValue && typeof nextValue === 'object' && !Array.isArray(nextValue) && Object.keys(nextValue).length === 0;
+                    if (nextValue !== undefined && !isEmptyObject) compacted[key] = nextValue;
+                }
+                return compacted;
+            }
+
+            return value;
+        }
+
+        function deepMerge(baseValue, overrideValue) {
+            if (overrideValue === undefined) return baseValue;
+            if (baseValue === undefined) return overrideValue;
+            if (Array.isArray(baseValue) || Array.isArray(overrideValue)) return overrideValue;
+
+            if (baseValue && overrideValue && typeof baseValue === 'object' && typeof overrideValue === 'object') {
+                const merged = { ...baseValue };
+                for (const [key, item] of Object.entries(overrideValue)) {
+                    merged[key] = deepMerge(baseValue[key], item);
+                }
+                return merged;
+            }
+
+            return overrideValue;
+        }
+
+        function getParsedJsonInput(inputId, allowArray = false) {
+            const input = document.getElementById(inputId);
+            if (!input) return undefined;
+
+            const raw = input.value.trim();
+            if (!raw) {
+                input.style.borderColor = '';
+                return undefined;
+            }
+
+            try {
+                const parsed = JSON.parse(raw);
+                const isValidType = allowArray
+                    ? (Array.isArray(parsed) || (parsed && typeof parsed === 'object'))
+                    : (parsed && typeof parsed === 'object' && !Array.isArray(parsed));
+
+                input.style.borderColor = isValidType ? '' : 'var(--danger)';
+                return isValidType ? parsed : undefined;
+            } catch (error) {
+                input.style.borderColor = 'var(--danger)';
+                return undefined;
+            }
+        }
+
+        function buildPluginClassConfig(pluginValue, configValue) {
+            if (!pluginValue || !configValue || typeof configValue !== 'object' || Object.keys(configValue).length === 0) return undefined;
+
+            const [pluginModule, pluginClass] = pluginValue.split('.');
+            if (!pluginModule || !pluginClass) return undefined;
+
+            return {
+                [pluginModule]: {
+                    [pluginClass]: configValue
+                }
+            };
+        }
+
+        function splitRawHttpMessage(raw) {
+            const normalized = raw.replace(/\r\n/g, '\n');
+            const separatorIndex = normalized.indexOf('\n\n');
+            const head = separatorIndex >= 0 ? normalized.slice(0, separatorIndex) : normalized;
+            const body = separatorIndex >= 0 ? normalized.slice(separatorIndex + 2) : '';
+            return { lines: head.split('\n'), body };
+        }
+
+        function parseHeaderMap(lines, startIndex = 1) {
+            const headers = {};
+            for (let i = startIndex; i < lines.length; i++) {
+                const headerMatch = lines[i].match(/^([^:]+):\s*(.+)$/);
+                if (headerMatch) headers[headerMatch[1].trim()] = headerMatch[2].trim();
+            }
+            return headers;
+        }
+
+        function looksLikeJson(value) {
+            const trimmed = (value || '').trim();
+            return trimmed.startsWith('{') || trimmed.startsWith('[');
+        }
+
+        function pathToJsonPath(path) {
+            if (!path) return '';
+            return path.startsWith('[') ? `$${path}` : `$.${path}`;
+        }
+
+        function parseCsvNumbers(rawValue) {
+            return (rawValue || '')
+                .split(',')
+                .map(item => item.trim())
+                .filter(Boolean)
+                .map(item => Number(item))
+                .filter(item => Number.isInteger(item));
+        }
+
+        function parseHeadersText(rawHeaders) {
+            const parsedHeaders = {};
+            (rawHeaders || '').split('\n').forEach(line => {
+                const match = line.match(/^([^:]+):\s*(.+)$/);
+                if (match) parsedHeaders[match[1].trim()] = match[2].trim();
+            });
+            return filterHeaders(parsedHeaders);
+        }
+
+        function suggestResponseJsonField() {
+            const pathInput = document.getElementById('responseJsonPath');
+            if (!pathInput || pathInput.dataset.userModified === 'true') return;
+
+            const uri = (document.getElementById('restUri').value || '').toLowerCase();
+            let suggested = '$.choices[0].message.content';
+
+            if (uri.includes('gandalf') || uri.includes('lakera')) {
+                suggested = '$.answer';
+            } else if (uri.includes('anthropic') || uri.includes('messages')) {
+                suggested = '$.content[0].text';
+            } else if (uri.includes('gemini') || uri.includes('generatecontent')) {
+                suggested = '$.candidates[0].content.parts[0].text';
+            } else if (uri.includes('cohere')) {
+                suggested = '$.generations[0].text';
+            } else if (uri.includes('ollama')) {
+                suggested = '$.response';
+            }
+
             pathInput.value = suggested;
+        }
+
+        function getLikelyResponseField(fields) {
+            const priorities = ['content', 'message.content', 'text', 'answer', 'response', 'output', 'completion'];
+            const scored = fields
+                .map(field => {
+                    const lowerPath = field.path.toLowerCase();
+                    let score = 0;
+                    priorities.forEach((needle, index) => {
+                        if (lowerPath.includes(needle)) score = Math.max(score, 100 - index * 10);
+                    });
+                    if (typeof field.value === 'string' && field.value.length > 8) score += 5;
+                    return { field, score };
+                })
+                .sort((left, right) => right.score - left.score);
+            return scored.length > 0 ? scored[0].field : null;
+        }
+
+        function toggleResponseFieldControls() {
+            const showPath = document.getElementById('responseFormat').value === 'json';
+            document.getElementById('responseJsonPath').disabled = !showPath;
+        }
+
+        function toggleSslOptions() {
+            const useBundle = document.getElementById('verifySslMode').value === 'bundle';
+            document.getElementById('verifySslBundleWrap').classList.toggle('hidden', !useBundle);
         }
 
 
@@ -1254,7 +1816,9 @@ run:
             selectedBuffs: [],
             detectorMode: 'auto',
             restParsedFields: [],
-            selectedInputField: null
+            selectedInputField: null,
+            restParsedResponseFields: [],
+            selectedResponseField: null
         };
 
         // Scenario to probe mappings
@@ -1263,6 +1827,7 @@ run:
             'all': ['all'],
             'dan': ['dan'],
             'grandma': ['grandma'],
+            'doctor': ['doctor'],
             'goodside': ['goodside'],
             'promptinject': ['promptinject'],
             'encoding': ['encoding'],
@@ -1274,9 +1839,10 @@ run:
             'lmrc': ['lmrc'],
             'malwaregen': ['malwaregen'],
             'donotanswer': ['donotanswer'],
-            'xss': ['xss'],
+            'web_injection': ['web_injection'],
             'exploitation': ['exploitation'],
-            'tap': ['tap'],
+            'fileformats': ['fileformats'],
+            'tap': ['tap', 'pair'],
             'goat': ['goat'],
             'atkgen': ['atkgen'],
             'glitch': ['glitch'],
@@ -1286,8 +1852,103 @@ run:
             'suffix': ['suffix'],
             'apikey': ['apikey'],
             'ansiescape': ['ansiescape'],
-            'visual_jailbreak': ['visual_jailbreak']
+            'visual_jailbreak': ['visual_jailbreak'],
+            'smuggling': ['smuggling'],
+            'propile': ['propile'],
+            'phrasing': ['phrasing'],
+            'topic': ['topic'],
+            'agent_breaker': ['agent_breaker'],
+            'av_spam_scanning': ['av_spam_scanning'],
+            'fitd': ['fitd'],
+            'audio': ['audio'],
+            'dra': ['dra'],
+            'sata': ['sata'],
+            'test': ['test'],
+            'pair': ['pair'],
+            'misleading': ['misleading'],
+            'badchars': ['badchars']
         };
+
+        const detectorOptionGroups = [
+            {
+                title: 'Core & Utility',
+                options: [
+                    'agent_breaker.AgentBreakerResult',
+                    'always.Fail', 'always.Pass', 'always.Passthru', 'always.Random',
+                    'any.AnyNonspaceOutput', 'any.AnyOutput',
+                    'ansiescape.Escaped', 'ansiescape.Raw',
+                    'apikey.ApiKey', 'continuation.Continuation'
+                ]
+            },
+            {
+                title: 'Jailbreak & Safety',
+                options: [
+                    'dan.AntiDAN', 'dan.DAN', 'dan.DANJailbreak', 'dan.DUDE', 'dan.DevMode', 'dan.MarkdownLink', 'dan.STAN',
+                    'judge.Jailbreak', 'judge.JailbreakOnlyAdversarial', 'judge.ModelAsJudge', 'judge.Refusal', 'judge.RefusalOnlyAdversarial',
+                    'mitigation.MitigationBypass', 'mitigation.ModernBERTRefusal', 'mitigation.Prefixes',
+                    'unsafe_content.LDNOOBW', 'unsafe_content.Martin_haDistilbert', 'unsafe_content.OfcomOffensiveDiscriminatory', 'unsafe_content.OfcomOffensiveGeneral',
+                    'unsafe_content.OfcomOffensiveMentalHealth', 'unsafe_content.OfcomOffensiveRaceEthnic', 'unsafe_content.OfcomOffensiveSexGender', 'unsafe_content.OfcomOffensiveSexual',
+                    'unsafe_content.S_nlpDetox', 'unsafe_content.SlursReclaimedSlurs', 'unsafe_content.SurgeProfanityAnimalReferences', 'unsafe_content.SurgeProfanityBodilyFluids',
+                    'unsafe_content.SurgeProfanityMentalDisability', 'unsafe_content.SurgeProfanityPhysicalAttributes', 'unsafe_content.SurgeProfanityPhysicalDisability',
+                    'unsafe_content.SurgeProfanityPolitical', 'unsafe_content.SurgeProfanityRacialEthnic', 'unsafe_content.SurgeProfanityReligious',
+                    'unsafe_content.SurgeProfanitySexual', 'unsafe_content.SurgeProfanitySexualOrientationGender', 'unsafe_content.ToxicCommentModel'
+                ]
+            },
+            {
+                title: 'Injection, Leakage & Web',
+                options: [
+                    'encoding.DecodeApprox', 'encoding.DecodeMatch',
+                    'exploitation.JinjaTemplateInjectionDetector', 'exploitation.PythonCodeExecution', 'exploitation.SQLiEcho', 'exploitation.SQLiSuccess',
+                    'fileformats.FileIsExecutable', 'fileformats.FileIsPickled', 'fileformats.PossiblePickleName',
+                    'leakreplay.StartsWith', 'productkey.Win5x5', 'promptinject.AttackRogueString', 'propile.PIILeak', 'propile.PIILeakExact',
+                    'sysprompt_extraction.PromptExtraction', 'sysprompt_extraction.PromptExtractionVerbatim',
+                    'web_injection.MarkdownExfilBasic', 'web_injection.MarkdownExfilContent', 'web_injection.MarkdownExfilExtendedImage',
+                    'web_injection.MarkdownExfilExtendedNonImage', 'web_injection.PlaygroundMarkdownExfil', 'web_injection.XSS'
+                ]
+            },
+            {
+                title: 'Hallucination, Toxicity & Benchmarks',
+                options: [
+                    'divergence.RepeatDiverges', 'divergence.RepeatedToken',
+                    'goodside.Glitch', 'goodside.PlainJSON', 'goodside.RileyIsnt',
+                    'knownbadsignatures.EICAR', 'knownbadsignatures.GTphish', 'knownbadsignatures.GTUBE',
+                    'lmrc.Anthro', 'lmrc.QuackMedicine', 'malwaregen.AnyCode',
+                    'misleading.MustContradictNLI', 'misleading.MustRefuteClaimKW', 'misleading.MustRefuteClaimModel',
+                    'packagehallucination.Dart', 'packagehallucination.JavaScriptNpm', 'packagehallucination.Perl', 'packagehallucination.PythonPypi',
+                    'packagehallucination.RakuLand', 'packagehallucination.RubyGems', 'packagehallucination.RustCrates',
+                    'snowball.DontStartNo', 'snowball.DontStartYes', 'visual_jailbreak.FigStep'
+                ]
+            },
+            {
+                title: 'Perspective API',
+                options: [
+                    'perspective.Attack_On_Author', 'perspective.Attack_On_Commenter', 'perspective.Flirtation', 'perspective.Identity_Attack',
+                    'perspective.Identity_Attack_Experimental', 'perspective.Incoherent', 'perspective.Inflammatory', 'perspective.Insult',
+                    'perspective.Insult_Experimental', 'perspective.Likely_To_Reject', 'perspective.Obscene', 'perspective.Profanity',
+                    'perspective.Profanity_Experimental', 'perspective.Severe_Toxicity', 'perspective.Severe_Toxicity_Experimental',
+                    'perspective.Sexually_Explicit', 'perspective.Spam', 'perspective.Threat', 'perspective.Threat_Experimental',
+                    'perspective.Toxicity', 'perspective.Toxicity_Experimental', 'perspective.Unsubstantial'
+                ]
+            },
+            {
+                title: 'Availability & Shields',
+                options: [
+                    'shields.Down', 'shields.Up'
+                ]
+            }
+        ];
+
+        function renderDetectorChips() {
+            const container = document.getElementById('detectorChips');
+            if (!container) return;
+
+            container.innerHTML = detectorOptionGroups.map(group => `
+                <div style="margin-bottom: 14px;">
+                    <div style="color: var(--purple); font-size: 0.8rem; margin-bottom: 6px; font-weight: 600;">${group.title}</div>
+                    <div>${group.options.map(option => `<span class="probe-chip" data-detector="${option}" onclick="toggleDetectorChip(this)"><span class="chip-check">✓</span>${option}</span>`).join('')}</div>
+                </div>
+            `).join('');
+        }
 
         // ==========================================
         // NAVIGATION
@@ -1312,6 +1973,8 @@ run:
                 } else {
                     document.getElementById('restNotNeeded').classList.add('hidden');
                     document.getElementById('restConfigSection').classList.remove('hidden');
+                    toggleResponseFieldControls();
+                    toggleSslOptions();
                 }
             }
             
@@ -1361,6 +2024,7 @@ run:
                 'all': 'All Probes',
                 'dan': 'DAN Jailbreaks',
                 'grandma': 'Grandma Exploit',
+                'doctor': 'Doctor Bypass',
                 'goodside': 'Goodside Attacks',
                 'promptinject': 'Prompt Injection',
                 'encoding': 'Encoding Bypass',
@@ -1372,8 +2036,9 @@ run:
                 'lmrc': 'LMRC Risk Cards',
                 'malwaregen': 'Malware Generation',
                 'donotanswer': 'Do Not Answer',
-                'xss': 'XSS & Web Injection',
+                'web_injection': 'XSS & Web Injection',
                 'exploitation': 'SQL/Template Injection',
+                'fileformats': 'Unsafe File Formats',
                 'tap': 'TAP/PAIR Attacks',
                 'goat': 'GOAT Multi-Turn',
                 'atkgen': 'Attack Generation',
@@ -1384,9 +2049,32 @@ run:
                 'suffix': 'GCG/BEAST Suffix',
                 'apikey': 'API Key Extraction',
                 'ansiescape': 'ANSI Escape',
-                'visual_jailbreak': 'Visual Jailbreak'
+                'visual_jailbreak': 'Visual Jailbreak',
+                'smuggling': 'Prompt Smuggling',
+                'propile': 'PII Leakage',
+                'phrasing': 'Phrasing Evasion',
+                'topic': 'Topic Restrictions',
+                'agent_breaker': 'Agent Breaker',
+                'av_spam_scanning': 'AV & Spam Signatures',
+                'fitd': 'Foot-In-The-Door',
+                'audio': 'Audio Achilles Heel',
+                'dra': 'DRA',
+                'sata': 'SATA',
+                'test': 'Internal Test Probe',
+                'pair': 'PAIR Jailbreak',
+                'misleading': 'Misleading Claims',
+                'badchars': 'Bad Characters'
             };
             document.getElementById('selectedScenarioName').textContent = scenarioNames[state.scenario] || 'Custom';
+        }
+
+        function normalizeSelectedProbeSpec(probes) {
+            const probeMap = {
+                tap: 'tap.TAP',
+                pair: 'tap.PAIR'
+            };
+
+            return (probes || []).map(probe => probeMap[probe] || probe).join(',');
         }
 
         // ==========================================
@@ -1398,7 +2086,7 @@ run:
             const apiKeyExample = document.getElementById('apiKeyEnvExample');
             
             // Show/hide API key hint
-            if (gen.includes('ollama') || gen.includes('ggml') || gen.includes('Pipeline') || gen.includes('Model') || gen.includes('function')) {
+            if (gen.includes('ollama') || gen.includes('ggml') || gen.includes('Pipeline') || gen.includes('Model') || gen.includes('function') || gen.includes('test.') || gen.includes('websocket') || gen.includes('guardrails.NeMoGuardrails')) {
                 apiKeyHint.classList.add('hidden');
             } else {
                 apiKeyHint.classList.remove('hidden');
@@ -1412,6 +2100,8 @@ run:
                 else if (gen.includes('bedrock')) envVar = 'AWS_ACCESS_KEY_ID';
                 else if (gen.includes('replicate')) envVar = 'REPLICATE_API_TOKEN';
                 else if (gen.includes('watsonx')) envVar = 'WATSONX_API_KEY';
+                else if (gen.includes('OpenAICompatible')) envVar = 'OPENAICOMPATIBLE_API_KEY';
+                else if (gen === 'rest.RestGenerator') envVar = 'REST_API_KEY';
                 apiKeyExample.textContent = `export ${envVar}="your-key-here"`;
             }
             
@@ -1439,33 +2129,20 @@ run:
             if (!raw) return;
             
             try {
-                const lines = raw.split('\n');
-                const firstLine = lines[0];
+                const { lines, body } = splitRawHttpMessage(raw);
+                const firstLine = lines[0] || '';
                 const methodMatch = firstLine.match(/^(GET|POST|PUT|DELETE|PATCH)\s+(\S+)/i);
                 
-                let method = 'post', path = '/', rawHeaders = {}, body = '', host = '', inBody = false;
+                let method = 'post', path = '/', host = '';
                 
                 if (methodMatch) {
                     method = methodMatch[1].toLowerCase();
                     path = methodMatch[2];
                 }
-                
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i];
-                    if (line.trim() === '') { inBody = true; continue; }
-                    
-                    if (inBody) {
-                        body += line + '\n';
-                    } else {
-                        const hdrMatch = line.match(/^([^:]+):\s*(.+)$/);
-                        if (hdrMatch) {
-                            rawHeaders[hdrMatch[1].trim()] = hdrMatch[2].trim();
-                            if (hdrMatch[1].toLowerCase() === 'host') host = hdrMatch[2].trim();
-                        }
-                    }
-                }
-                
-                body = body.trim();
+                const rawHeaders = parseHeaderMap(lines);
+                Object.entries(rawHeaders).forEach(([name, value]) => {
+                    if (name.toLowerCase() === 'host') host = value;
+                });
                 
                 // Build URI
                 const proto = (host.includes('localhost') || host.includes('127.0.0.1')) ? 'http' : 'https';
@@ -1509,15 +2186,55 @@ run:
                 }
                 document.getElementById('restHeaders').value = headerStr.trim();
                 
-                // Try guessing best JSON path automatically
-                suggestResponseJsonField();
-                
                 // Display parsed fields
                 displayParsedFields(fields, body);
+                updatePreview();
                 
             } catch (e) {
                 console.error('Parse error:', e);
                 showToast('Failed to parse request');
+            }
+        }
+
+        function parseHttpResponse() {
+            const raw = document.getElementById('rawHttpResponse').value.trim();
+            if (!raw) return;
+
+            try {
+                const { lines, body } = splitRawHttpMessage(raw);
+                const headers = parseHeaderMap(lines, 1);
+                const contentType = Object.entries(headers).find(([name]) => name.toLowerCase() === 'content-type');
+                const responseBody = body.trim();
+                const shouldParseJson = (contentType && contentType[1].toLowerCase().includes('json')) || looksLikeJson(responseBody);
+
+                let fields = [];
+                if (shouldParseJson) {
+                    const json = JSON.parse(responseBody);
+                    fields = extractAllFields(json, '');
+                    state.restParsedResponseFields = fields;
+                    document.getElementById('responseFormat').value = 'json';
+                    displayParsedResponseFields(fields);
+
+                    const currentPath = document.getElementById('responseJsonPath');
+                    if (currentPath.dataset.userModified !== 'true') {
+                        const likelyField = getLikelyResponseField(fields);
+                        if (likelyField) currentPath.value = pathToJsonPath(likelyField.path);
+                    }
+                } else {
+                    state.restParsedResponseFields = [];
+                    state.selectedResponseField = null;
+                    document.getElementById('responseFormat').value = 'text';
+                    document.getElementById('parsedResponseFieldsSection').classList.add('hidden');
+                    if (document.getElementById('responseJsonPath').dataset.userModified !== 'true') {
+                        document.getElementById('responseJsonPath').value = '';
+                    }
+                }
+
+                toggleResponseFieldControls();
+                updatePreview();
+            } catch (error) {
+                console.error('Response parse error:', error);
+                showToast('Failed to parse response');
             }
         }
 
@@ -1572,6 +2289,31 @@ run:
             });
         }
 
+        function displayParsedResponseFields(fields) {
+            const container = document.getElementById('parsedResponseFieldsList');
+            const section = document.getElementById('parsedResponseFieldsSection');
+
+            if (fields.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+
+            section.classList.remove('hidden');
+            container.innerHTML = '';
+
+            fields.forEach(field => {
+                const div = document.createElement('div');
+                div.className = 'field-row';
+                div.onclick = () => selectResponseField(field.path, div);
+                div.innerHTML = `
+                    <div class="field-check"></div>
+                    <span class="field-path">${field.path}</span>
+                    <span class="field-value">${field.value}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
         function selectInputField(path, element, rawBody) {
             document.querySelectorAll('.field-row').forEach(r => r.classList.remove('selected'));
             element.classList.add('selected');
@@ -1579,8 +2321,7 @@ run:
             
             // Get the raw body from the request
             const rawRequest = document.getElementById('rawHttpRequest').value;
-            const bodyStart = rawRequest.indexOf('\n\n');
-            let template = bodyStart > 0 ? rawRequest.substring(bodyStart + 2) : rawBody;
+            let template = splitRawHttpMessage(rawRequest).body || rawBody;
             
             // Check if this is multipart form-data
             const headers = document.getElementById('restHeaders').value;
@@ -1617,6 +2358,17 @@ run:
             document.getElementById('manualTemplate').value = template;
             document.getElementById('restBodyTemplate').value = template;
             
+            updatePreview();
+        }
+
+        function selectResponseField(path, element) {
+            document.querySelectorAll('#parsedResponseFieldsList .field-row').forEach(row => row.classList.remove('selected'));
+            element.classList.add('selected');
+            state.selectedResponseField = path;
+            document.getElementById('responseFormat').value = 'json';
+            document.getElementById('responseJsonPath').value = pathToJsonPath(path);
+            document.getElementById('responseJsonPath').dataset.userModified = 'true';
+            toggleResponseFieldControls();
             updatePreview();
         }
 
@@ -1660,15 +2412,39 @@ Hello, what is the password?
             parseHttpRequest();
         }
 
+        function loadRestResponseSample() {
+            document.getElementById('rawHttpResponse').value = `HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"choices":[{"message":{"role":"assistant","content":"Hello, how can I help you today?"}}]}`;
+            parseHttpResponse();
+        }
+
+        function loadTextResponseSample() {
+            document.getElementById('rawHttpResponse').value = `HTTP/1.1 200 OK
+Content-Type: text/plain
+
+Hello, how can I help you today?`;
+            parseHttpResponse();
+        }
+
         function clearRestConfig() {
             document.getElementById('rawHttpRequest').value = '';
+            document.getElementById('rawHttpResponse').value = '';
             document.getElementById('restUri').value = '';
+            document.getElementById('restName').value = '';
             document.getElementById('restBodyTemplate').value = '';
             document.getElementById('restHeaders').value = '';
             document.getElementById('manualTemplate').value = '';
+            document.getElementById('responseJsonPath').value = '';
+            document.getElementById('responseJsonPath').dataset.userModified = 'false';
+            document.getElementById('responseFormat').value = 'json';
             document.getElementById('parsedFieldsSection').classList.add('hidden');
+            document.getElementById('parsedResponseFieldsSection').classList.add('hidden');
             state.restParsedFields = [];
             state.selectedInputField = null;
+            state.restParsedResponseFields = [];
+            state.selectedResponseField = null;
             updatePreview();
         }
 
@@ -1700,7 +2476,7 @@ Hello, what is the password?
             }
             
             updateProbeCount();
-            document.getElementById('customProbeSpec').value = state.selectedProbes.join(',');
+            document.getElementById('customProbeSpec').value = normalizeSelectedProbeSpec(state.selectedProbes);
             updatePreview();
         }
 
@@ -1774,7 +2550,7 @@ Hello, what is the password?
         }
 
         function checkAttackerNeeded() {
-            const needsAttacker = ['tap', 'goat', 'atkgen', 'fitd'].some(p => state.selectedProbes.includes(p));
+            const needsAttacker = ['tap', 'pair', 'goat', 'atkgen', 'fitd'].some(p => state.selectedProbes.includes(p));
             document.getElementById('attackerNeededNote').classList.toggle('hidden', !needsAttacker);
             
             if (needsAttacker && !document.getElementById('enableAttacker').checked) {
@@ -1818,6 +2594,268 @@ Hello, what is the password?
             updatePreview();
         }
 
+        function getProbeSpec() {
+            return document.getElementById('customProbeSpec').value.trim() || normalizeSelectedProbeSpec(state.selectedProbes);
+        }
+
+        function getDetectorSpec() {
+            return document.getElementById('customDetectorSpec').value.trim() || state.selectedDetectors.join(',');
+        }
+
+        function getOptionalModelConfig(uriInputId) {
+            const uri = document.getElementById(uriInputId).value.trim();
+            return uri ? { uri } : undefined;
+        }
+
+        function getMergedModelConfig(uriInputId, advancedInputId) {
+            return compactConfig(deepMerge(getOptionalModelConfig(uriInputId), getParsedJsonInput(advancedInputId)));
+        }
+
+        function getTargetGeneratorPluginConfig() {
+            const generatorValue = document.getElementById('targetGenerator').value;
+            const targetConfig = compactConfig(deepMerge(
+                getOptionalModelConfig('targetUri'),
+                getParsedJsonInput('targetGeneratorConfig')
+            ));
+
+            if (generatorValue === 'rest.RestGenerator') {
+                return buildPluginClassConfig(generatorValue, getRestConfig());
+            }
+
+            return buildPluginClassConfig(generatorValue, targetConfig);
+        }
+
+        function getTapProbeConfigBase(attackerModelConfig, judgeModelConfig) {
+            return compactConfig({
+                attack_model_config: attackerModelConfig,
+                attack_max_attempts: Number(document.getElementById('attackerMaxCalls').value) || 5,
+                branching_factor: Number(document.getElementById('tapBranching').value) || 4,
+                width: Number(document.getElementById('tapWidth').value) || 10,
+                depth: Number(document.getElementById('tapDepth').value) || 10,
+                n_streams: Number(document.getElementById('tapStreams').value) || 1,
+                keep_last_n: Number(document.getElementById('tapKeepLast').value) || 1,
+                pruning: document.getElementById('tapPruning').value === 'true' ? true : false,
+                goal_str: document.getElementById('tapGoalStr').value.trim() || undefined,
+                target: document.getElementById('tapTargetResponse').value.trim() || undefined,
+                evaluator_model_config: judgeModelConfig
+            });
+        }
+
+        function getRestConfig() {
+            const method = document.getElementById('restMethod').value;
+            const headers = parseHeadersText(document.getElementById('restHeaders').value);
+            const template = document.getElementById('restBodyTemplate').value || document.getElementById('manualTemplate').value;
+            const responseFormat = document.getElementById('responseFormat').value;
+            const responseField = document.getElementById('responseJsonPath').value.trim();
+            const timeout = Number(document.getElementById('requestTimeout').value) || 20;
+            const proxy = document.getElementById('httpProxy').value.trim();
+            const verifySslMode = document.getElementById('verifySslMode').value;
+            const isMultipart = Object.keys(headers).some(key => key.toLowerCase() === 'content-type' && headers[key].toLowerCase().includes('multipart/form-data'));
+            const restConfig = {
+                name: document.getElementById('restName').value.trim() || undefined,
+                uri: document.getElementById('restUri').value.trim() || undefined,
+                key_env_var: document.getElementById('restKeyEnvVar').value.trim() || undefined,
+                method,
+                headers: Object.keys(headers).length > 0 ? headers : undefined,
+                request_timeout: timeout,
+                ratelimit_codes: parseCsvNumbers(document.getElementById('rateLimitCodes').value),
+                skip_codes: parseCsvNumbers(document.getElementById('skipCodes').value),
+                response_json: responseFormat === 'json',
+                response_json_field: responseFormat === 'json' && responseField ? responseField : undefined,
+                client_cert: document.getElementById('clientCert').value.trim() || undefined,
+                client_key: document.getElementById('clientKey').value.trim() || undefined,
+                client_key_passphrase_env_var: document.getElementById('clientKeyPassEnv').value.trim() || undefined
+            };
+
+            if (template) {
+                if (isMultipart) {
+                    restConfig.req_template = template.replace(/\r?\n/g, '\r\n');
+                } else {
+                    try {
+                        restConfig.req_template_json_object = JSON.parse(template);
+                    } catch (error) {
+                        restConfig.req_template = template;
+                    }
+                }
+            }
+
+            if (proxy) restConfig.proxies = { http: proxy, https: proxy };
+
+            if (verifySslMode === 'false') {
+                restConfig.verify_ssl = false;
+            } else if (verifySslMode === 'bundle') {
+                const bundlePath = document.getElementById('verifySslBundle').value.trim();
+                if (bundlePath) restConfig.verify_ssl = bundlePath;
+            }
+
+            return compactConfig(deepMerge(restConfig, getParsedJsonInput('restAdvancedConfig')));
+        }
+
+        function buildConfig() {
+            const generatorValue = document.getElementById('targetGenerator').value;
+            const [generatorModule] = generatorValue.split('.');
+            const probeSpec = getProbeSpec();
+            const detectorSpec = getDetectorSpec();
+            const attackerModelConfig = getMergedModelConfig('attackerUri', 'attackerAdvancedConfig');
+            const judgeModelConfig = getMergedModelConfig('judgeUri', 'judgeAdvancedConfig');
+            const defaultJudgeDetectorSpec = 'judge.Jailbreak,judge.Refusal,judge.ModelAsJudge';
+            const config = {
+                plugins: {
+                    target_type: generatorModule,
+                    target_name: document.getElementById('targetModel').value.trim() || undefined,
+                    probe_spec: probeSpec || undefined,
+                    extended_detectors: state.detectorMode === 'extended' ? true : undefined,
+                    detector_spec: state.detectorMode === 'custom' && detectorSpec ? detectorSpec : (document.getElementById('enableJudge').checked ? defaultJudgeDetectorSpec : undefined),
+                    buff_spec: document.getElementById('enableBuffs').checked
+                        ? (document.getElementById('customBuffSpec').value.trim() || (state.selectedBuffs.length > 0 ? state.selectedBuffs.join(',') : undefined))
+                        : undefined,
+                    buffs_include_original_prompt: document.getElementById('enableBuffs').checked && document.getElementById('buffsIncludeOriginal').value === 'true' ? true : undefined,
+                    buff_max: document.getElementById('enableBuffs').checked && document.getElementById('buffMax').value ? Number(document.getElementById('buffMax').value) : undefined,
+                    generators: getTargetGeneratorPluginConfig()
+                },
+                run: {
+                    generations: Number(document.getElementById('generations').value) || 5,
+                    seed: document.getElementById('seed').value ? Number(document.getElementById('seed').value) : undefined,
+                    eval_threshold: document.getElementById('evalThreshold').value && document.getElementById('evalThreshold').value !== '0.5' ? Number(document.getElementById('evalThreshold').value) : undefined,
+                    system_prompt: document.getElementById('systemPrompt').value.trim() || undefined,
+                    deprefix: document.getElementById('deprefix').checked ? undefined : false,
+                    probe_tags: document.getElementById('probeTags').value.trim() || undefined,
+                    user_agent: document.getElementById('userAgent').value.trim() || undefined,
+                    soft_probe_prompt_cap: document.getElementById('softProbePromptCap').value ? Number(document.getElementById('softProbePromptCap').value) : undefined,
+                    target_lang: document.getElementById('targetLang').value.trim() || undefined,
+                    langproviders: getParsedJsonInput('langProviders', true)
+                },
+                system: {
+                    parallel_attempts: document.getElementById('parallelAttempts').value ? Number(document.getElementById('parallelAttempts').value) : undefined,
+                    parallel_requests: document.getElementById('parallelRequests').value ? Number(document.getElementById('parallelRequests').value) : undefined,
+                    max_workers: document.getElementById('maxWorkers').value ? Number(document.getElementById('maxWorkers').value) : undefined,
+                    lite: document.getElementById('liteMode').checked ? true : undefined,
+                    show_z: document.getElementById('showZScore').checked ? true : undefined,
+                    narrow_output: document.getElementById('narrowOutput').checked ? true : undefined,
+                    verbose: document.getElementById('verbose').checked ? 1 : undefined
+                },
+                reporting: {
+                    report_prefix: document.getElementById('reportPrefix').value.trim() || undefined,
+                    taxonomy: document.getElementById('taxonomy').value || undefined,
+                    report_dir: document.getElementById('reportDir').value.trim() || undefined,
+                    show_100_pass_modules: document.getElementById('show100PassModules').checked ? true : undefined,
+                    show_group_score: document.getElementById('showGroupScore').checked ? true : undefined,
+                    group_aggregation_function: document.getElementById('groupAggregationFunction').value || undefined,
+                    show_top_group_score: document.getElementById('showTopGroupScore').checked ? true : undefined,
+                    confidence_interval_method: document.getElementById('confidenceIntervalMethod').value || undefined,
+                    bootstrap_num_iterations: document.getElementById('bootstrapIterations').value ? Number(document.getElementById('bootstrapIterations').value) : undefined,
+                    bootstrap_confidence_level: document.getElementById('bootstrapConfidenceLevel').value ? Number(document.getElementById('bootstrapConfidenceLevel').value) : undefined,
+                    bootstrap_min_sample_size: document.getElementById('bootstrapMinSampleSize').value ? Number(document.getElementById('bootstrapMinSampleSize').value) : undefined
+                }
+            };
+
+            if (document.getElementById('enableAttacker').checked) {
+                const attackerType = document.getElementById('attackerType').value;
+                const attackerModel = document.getElementById('attackerModel').value.trim();
+                if (attackerType && attackerModel) {
+                    config.plugins.probes = config.plugins.probes || {};
+                    const tapProbeBase = getTapProbeConfigBase(attackerModelConfig, judgeModelConfig);
+
+                    if (state.selectedProbes.includes('tap') || state.selectedProbes.includes('pair')) {
+                        config.plugins.probes.tap = config.plugins.probes.tap || {};
+                        if (state.selectedProbes.includes('tap')) {
+                            config.plugins.probes.tap.TAP = {
+                                attack_model_type: attackerType,
+                                attack_model_name: attackerModel,
+                                ...tapProbeBase
+                            };
+                        }
+                        if (state.selectedProbes.includes('pair')) {
+                            config.plugins.probes.tap.PAIR = {
+                                attack_model_type: attackerType,
+                                attack_model_name: attackerModel,
+                                ...tapProbeBase
+                            };
+                        }
+                    }
+
+                    if (state.selectedProbes.includes('goat')) {
+                        config.plugins.probes.goat = {
+                            GOATAttack: {
+                                red_team_model_type: attackerType,
+                                red_team_model_name: attackerModel,
+                                red_team_model_config: attackerModelConfig,
+                                max_calls_per_conv: Number(document.getElementById('attackerMaxCalls').value) || 5
+                            }
+                        };
+                    }
+
+                    if (state.selectedProbes.includes('atkgen')) {
+                        config.plugins.probes.atkgen = {
+                            Tox: {
+                                red_team_model_type: attackerType,
+                                red_team_model_name: attackerModel,
+                                red_team_model_config: attackerModelConfig,
+                                max_calls_per_conv: Number(document.getElementById('attackerMaxCalls').value) || 5
+                            }
+                        };
+                    }
+                }
+            }
+
+            if (document.getElementById('enableJudge').checked) {
+                const judgeType = document.getElementById('judgeType').value;
+                const judgeModel = document.getElementById('judgeModel').value.trim();
+                if (judgeType && judgeModel) {
+                    const modelAsJudgeGoal = document.getElementById('judgeGoal').value.trim() || undefined;
+                    const confidenceCutoff = Number(document.getElementById('judgeConfidence').value) || 7;
+                    const customJudgeSystemPrompt = document.getElementById('judgeSystemPrompt').value.trim() || undefined;
+                    config.plugins.detectors = {
+                        judge: {
+                            Jailbreak: {
+                                detector_model_type: judgeType,
+                                detector_model_name: judgeModel,
+                                detector_model_config: judgeModelConfig,
+                                confidence_cutoff: confidenceCutoff,
+                                custom_system_prompt: customJudgeSystemPrompt
+                            },
+                            Refusal: {
+                                detector_model_type: judgeType,
+                                detector_model_name: judgeModel,
+                                detector_model_config: judgeModelConfig,
+                                custom_system_prompt: customJudgeSystemPrompt
+                            },
+                            ModelAsJudge: {
+                                detector_model_type: judgeType,
+                                detector_model_name: judgeModel,
+                                detector_model_config: judgeModelConfig,
+                                detector_goal: modelAsJudgeGoal,
+                                confidence_cutoff: confidenceCutoff
+                            }
+                        }
+                    };
+
+                    if (state.selectedProbes.includes('tap') || state.selectedProbes.includes('pair')) {
+                        config.plugins.probes = config.plugins.probes || {};
+                        config.plugins.probes.tap = config.plugins.probes.tap || {};
+                        if (state.selectedProbes.includes('tap')) {
+                            config.plugins.probes.tap.TAP = {
+                                ...(config.plugins.probes.tap.TAP || {}),
+                                evaluator_model_type: judgeType,
+                                evaluator_model_name: judgeModel,
+                                evaluator_model_config: judgeModelConfig
+                            };
+                        }
+                        if (state.selectedProbes.includes('pair')) {
+                            config.plugins.probes.tap.PAIR = {
+                                ...(config.plugins.probes.tap.PAIR || {}),
+                                evaluator_model_type: judgeType,
+                                evaluator_model_name: judgeModel,
+                                evaluator_model_config: judgeModelConfig
+                            };
+                        }
+                    }
+                }
+            }
+
+            return compactConfig(deepMerge(config, getParsedJsonInput('rootConfigOverride')));
+        }
+
         // ==========================================
         // PREVIEW GENERATION
         // ==========================================
@@ -1855,257 +2893,42 @@ Hello, what is the password?
         }
 
         function generateCommand() {
-            let cmd = 'garak';
-            
-            const gen = document.getElementById('targetGenerator').value;
-            const model = document.getElementById('targetModel').value;
-            const generations = document.getElementById('generations').value;
-            const seed = document.getElementById('seed').value;
-            
-            // Target
-            const genParts = gen.split('.');
-            cmd += ` --target_type ${genParts[0]}`;
-            if (model) cmd += ` --target_name "${model}"`;
-            
-            // For REST, reference config file
-            if (gen === 'rest.RestGenerator') {
-                cmd += ' -G garak-rest.json';
-            }
-            
-            // Probes
-            const probeSpec = document.getElementById('customProbeSpec').value || state.selectedProbes.join(',');
-            if (probeSpec) {
-                cmd += ` --probes ${probeSpec}`;
-            } else if (state.selectedProbes.length > 0) {
-                cmd += ` --probes ${state.selectedProbes.join(',')}`;
-            }
-            
-            // Detectors
-            if (state.detectorMode === 'extended') {
-                cmd += ' --extended_detectors';
-            } else if (state.detectorMode === 'custom' && state.selectedDetectors.length > 0) {
-                cmd += ` --detectors ${state.selectedDetectors.join(',')}`;
-            }
-            
-            // Buffs
-            if (document.getElementById('enableBuffs').checked && state.selectedBuffs.length > 0) {
-                cmd += ` --buffs ${state.selectedBuffs.join(',')}`;
-            }
-            
-            // Options
-            if (generations && generations !== '5') cmd += ` --generations ${generations}`;
-            if (seed) cmd += ` --seed ${seed}`;
-            
-            const parallel = document.getElementById('parallelAttempts').value;
-            if (parallel) cmd += ` --parallel_attempts ${parallel}`;
-            
-            if (document.getElementById('verbose').checked) cmd += ' -v';
-            
+            const config = buildConfig();
             const preset = document.getElementById('configPreset').value;
+            let cmd = 'garak';
+
             if (preset) cmd += ` --config ${preset}`;
-            
+
+            cmd += ` --target_type ${config.plugins.target_type}`;
+            if (config.plugins.target_name) cmd += ` --target_name ${JSON.stringify(config.plugins.target_name)}`;
+            if (config.plugins.target_type === 'rest') cmd += ' -G garak-rest.json';
+            if (config.plugins.probe_spec) cmd += ` --probes ${config.plugins.probe_spec}`;
+            if (config.plugins.extended_detectors) cmd += ' --extended_detectors';
+            if (config.plugins.detector_spec) cmd += ` --detectors ${config.plugins.detector_spec}`;
+            if (config.plugins.buff_spec) cmd += ` --buffs ${config.plugins.buff_spec}`;
+            if (config.run.generations && config.run.generations !== 5) cmd += ` --generations ${config.run.generations}`;
+            if (config.run.seed !== undefined) cmd += ` --seed ${config.run.seed}`;
+            if (config.run.eval_threshold !== undefined) cmd += ` --eval_threshold ${config.run.eval_threshold}`;
+            if (config.run.probe_tags) cmd += ` --probe_tags ${JSON.stringify(config.run.probe_tags)}`;
+            if (config.system && config.system.parallel_attempts) cmd += ` --parallel_attempts ${config.system.parallel_attempts}`;
+            if (config.system && config.system.parallel_requests) cmd += ` --parallel_requests ${config.system.parallel_requests}`;
+            if (config.reporting && config.reporting.report_prefix) cmd += ` --report_prefix ${JSON.stringify(config.reporting.report_prefix)}`;
+            if (config.reporting && config.reporting.taxonomy) cmd += ` --taxonomy ${config.reporting.taxonomy}`;
+            if (config.reporting && config.reporting.report_dir) cmd += ` --report_dir ${JSON.stringify(config.reporting.report_dir)}`;
+            if (config.run && config.run.user_agent) cmd += ` --user_agent ${JSON.stringify(config.run.user_agent)}`;
+            if (config.run && config.run.target_lang) cmd += ` --target_lang ${JSON.stringify(config.run.target_lang)}`;
+            if (config.system && config.system.max_workers) cmd += ` --max_workers ${config.system.max_workers}`;
+            if (config.system && config.system.lite) cmd += ' --lite';
+            if (config.system && config.system.show_z) cmd += ' --show_z';
+            if (config.system && config.system.narrow_output) cmd += ' --narrow_output';
+            if (config.system && config.system.verbose) cmd += ' -v';
+
             return cmd;
         }
 
         function generateYaml() {
-            const gen = document.getElementById('targetGenerator').value;
-            const model = document.getElementById('targetModel').value;
-            const generations = document.getElementById('generations').value;
-            const seed = document.getElementById('seed').value;
-            
-            let yaml = `# Garak Configuration
-# Run: garak --config garak-config.yaml
-
-`;
-            
-            // Plugins section
-            yaml += `plugins:\n`;
-            yaml += `  target_type: ${gen.split('.')[0]}\n`;
-            if (model) yaml += `  target_name: "${model}"\n`;
-            
-            // Probes
-            const probeSpec = document.getElementById('customProbeSpec').value || state.selectedProbes.join(',');
-            if (probeSpec) {
-                yaml += `  probe_spec: ${probeSpec}\n`;
-            }
-            
-            // Detectors
-            if (state.detectorMode === 'extended') {
-                yaml += `  extended_detectors: true\n`;
-            } else if (state.detectorMode === 'custom' && state.selectedDetectors.length > 0) {
-                yaml += `  detector_spec: ${state.selectedDetectors.join(',')}\n`;
-            }
-            
-            // Buffs
-            if (document.getElementById('enableBuffs').checked && state.selectedBuffs.length > 0) {
-                yaml += `  buff_spec: ${state.selectedBuffs.join(',')}\n`;
-            }
-            
-            // REST Generator config
-            if (gen === 'rest.RestGenerator') {
-                yaml += `\n  generators:\n`;
-                yaml += `    rest:\n`;
-                yaml += `      RestGenerator:\n`;
-                
-                const uri = document.getElementById('restUri').value;
-                if (uri) yaml += `        uri: "${uri}"\n`;
-                
-                yaml += `        method: "${document.getElementById('restMethod').value}"\n`;
-                
-                const rawHeaders = document.getElementById('restHeaders').value;
-                let parsedHeaders = {};
-                if (rawHeaders) {
-                    rawHeaders.split('\n').forEach(line => {
-                        const m = line.match(/^([^:]+):\s*(.+)$/);
-                        if (m) parsedHeaders[m[1].trim()] = m[2].trim();
-                    });
-                }
-                
-                // Filter out aggressive browser headers
-                let filteredHeaders = filterHeaders(parsedHeaders);
-                
-                const isMultipart = Object.keys(filteredHeaders).some(k => k.toLowerCase() === 'content-type' && filteredHeaders[k].toLowerCase().includes('multipart/form-data'));
-                const template = document.getElementById('restBodyTemplate').value || document.getElementById('manualTemplate').value;
-                
-                if (template) {
-                    if (isMultipart) {
-                        // For multipart form-data, use req_template (string) with properly escaped CRLF sequences
-                        const escapedTemplate = template.replace(/\r?\n/g, '\\r\\n').replace(/"/g, '\\"');
-                        yaml += `        # IMPORTANT: For multipart form-data, use req_template (string) with exact CRLF escapes\n`;
-                        yaml += `        req_template: "${escapedTemplate}"\n`;
-                    } else {
-                        // For JSON APIs, try to use req_template_json_object natively
-                        try {
-                            JSON.parse(template);
-                            yaml += `        req_template_json_object: ${template.replace(/\n/g, '')}\n`;
-                        } catch (e) {
-                            // If not valid JSON, use req_template as a raw string
-                            yaml += `        req_template: '${template.replace(/'/g, "''").replace(/\n/g, '')}'\n`;
-                        }
-                    }
-                }
-                
-                yaml += `        response_json: true\n`;
-                
-                const jsonPath = document.getElementById('responseJsonPath').value;
-                if (jsonPath) yaml += `        response_json_field: "${jsonPath}"\n`;
-                
-                if (Object.keys(filteredHeaders).length > 0) {
-                    yaml += `        headers:\n`;
-                    for (const [k, v] of Object.entries(filteredHeaders)) {
-                        // Escape quotes in header values
-                        const val = v.replace(/"/g, '\\"');
-                        yaml += `          "${k}": "${val}"\n`;
-                    }
-                }
-                
-                const proxy = document.getElementById('httpProxy').value;
-                if (proxy) {
-                    yaml += `        proxies:\n`;
-                    yaml += `          http: "${proxy}"\n`;
-                    yaml += `          https: "${proxy}"\n`;
-                }
-                
-                const timeout = document.getElementById('requestTimeout').value;
-                if (timeout && timeout !== '60') yaml += `        request_timeout: ${timeout}\n`;
-                
-                if (!document.getElementById('verifySSL').checked) yaml += `        verify_ssl: false\n`;
-            }
-            
-            // Attacker LLM config
-            if (document.getElementById('enableAttacker').checked) {
-                const attackerType = document.getElementById('attackerType').value;
-                const attackerModel = document.getElementById('attackerModel').value;
-                
-                if (attackerType && attackerModel) {
-                    yaml += `\n  probes:\n`;
-                    
-                    if (state.selectedProbes.includes('tap')) {
-                        yaml += `    tap:\n`;
-                        yaml += `      TAP:\n`;
-                        yaml += `        attack_model_type: ${attackerType}\n`;
-                        yaml += `        attack_model_name: "${attackerModel}"\n`;
-                        yaml += `        branching_factor: ${document.getElementById('tapBranching').value || 4}\n`;
-                        yaml += `        depth: ${document.getElementById('tapDepth').value || 10}\n`;
-                    }
-                    
-                    if (state.selectedProbes.includes('goat')) {
-                        yaml += `    goat:\n`;
-                        yaml += `      GOATAttack:\n`;
-                        yaml += `        red_team_model_type: ${attackerType}\n`;
-                        yaml += `        red_team_model_name: "${attackerModel}"\n`;
-                        yaml += `        max_calls_per_conv: ${document.getElementById('attackerMaxCalls').value || 5}\n`;
-                    }
-                    
-                    if (state.selectedProbes.includes('atkgen')) {
-                        yaml += `    atkgen:\n`;
-                        yaml += `      Tox:\n`;
-                        yaml += `        red_team_model_type: ${attackerType}\n`;
-                        yaml += `        red_team_model_name: "${attackerModel}"\n`;
-                        yaml += `        max_calls_per_conv: ${document.getElementById('attackerMaxCalls').value || 5}\n`;
-                    }
-                }
-            }
-            
-            // Judge/Evaluator config
-            if (document.getElementById('enableJudge').checked) {
-                const judgeType = document.getElementById('judgeType').value;
-                const judgeModel = document.getElementById('judgeModel').value;
-                
-                if (judgeType && judgeModel) {
-                    yaml += `\n  detectors:\n`;
-                    yaml += `    judge:\n`;
-                    yaml += `      Jailbreak:\n`;
-                    yaml += `        detector_model_type: ${judgeType}\n`;
-                    yaml += `        detector_model_name: "${judgeModel}"\n`;
-                    
-                    const confidence = document.getElementById('judgeConfidence').value;
-                    if (confidence) yaml += `        confidence_cutoff: ${confidence}\n`;
-                }
-            }
-            
-            // Run section
-            yaml += `\nrun:\n`;
-            yaml += `  generations: ${generations || 5}\n`;
-            
-            if (seed) yaml += `  seed: ${seed}\n`;
-            
-            const evalThreshold = document.getElementById('evalThreshold').value;
-            if (evalThreshold && evalThreshold !== '0.5') yaml += `  eval_threshold: ${evalThreshold}\n`;
-            
-            const sysPrompt = document.getElementById('systemPrompt').value;
-            if (sysPrompt) yaml += `  system_prompt: "${sysPrompt.replace(/"/g, '\\"')}"\n`;
-            
-            if (!document.getElementById('deprefix').checked) yaml += `  deprefix: false\n`;
-            
-            const probeTags = document.getElementById('probeTags').value;
-            if (probeTags) yaml += `  probe_tags: ${probeTags}\n`;
-            
-            // System section
-            const parallelAttempts = document.getElementById('parallelAttempts').value;
-            const parallelRequests = document.getElementById('parallelRequests').value;
-            const narrow = document.getElementById('narrowOutput').checked;
-            const verbose = document.getElementById('verbose').checked;
-            
-            if (parallelAttempts || parallelRequests || narrow || verbose) {
-                yaml += `\nsystem:\n`;
-                if (parallelAttempts) yaml += `  parallel_attempts: ${parallelAttempts}\n`;
-                if (parallelRequests) yaml += `  parallel_requests: ${parallelRequests}\n`;
-                if (narrow) yaml += `  narrow_output: true\n`;
-                if (verbose) yaml += `  verbose: 1\n`;
-            }
-            
-            // Reporting
-            const reportPrefix = document.getElementById('reportPrefix').value;
-            const taxonomy = document.getElementById('taxonomy').value;
-            
-            if (reportPrefix || taxonomy) {
-                yaml += `\nreporting:\n`;
-                if (reportPrefix) yaml += `  report_prefix: "${reportPrefix}"\n`;
-                if (taxonomy) yaml += `  taxonomy: ${taxonomy}\n`;
-            }
-            
-            return yaml;
+            const config = buildConfig();
+            return `# Garak Configuration\n# Run: garak --config garak-config.yaml\n\n${objectToYaml(config)}`;
         }
 
         function updateStats() {
@@ -2167,63 +2990,7 @@ Hello, what is the password?
         }
 
         function generateRestJson() {
-            const uri = document.getElementById('restUri').value;
-            const method = document.getElementById('restMethod').value;
-            const rawHeaders = document.getElementById('restHeaders').value;
-            const template = document.getElementById('restBodyTemplate').value || document.getElementById('manualTemplate').value;
-            const jsonPath = document.getElementById('responseJsonPath').value;
-            const proxy = document.getElementById('httpProxy').value;
-            const timeout = document.getElementById('requestTimeout').value;
-            const verifySSL = document.getElementById('verifySSL').checked;
-            
-            // Parse headers
-            let parsedHeaders = {};
-            if (rawHeaders) {
-                rawHeaders.split('\n').forEach(line => {
-                    const m = line.match(/^([^:]+):\s*(.+)$/);
-                    if (m) parsedHeaders[m[1].trim()] = m[2].trim();
-                });
-            }
-            
-            // Apply header filtering
-            let filteredHeaders = filterHeaders(parsedHeaders);
-            
-            const isMultipart = Object.keys(filteredHeaders).some(k => k.toLowerCase() === 'content-type' && filteredHeaders[k].toLowerCase().includes('multipart/form-data'));
-            
-            const config = {
-                rest: {
-                    RestGenerator: {
-                        uri: uri,
-                        method: method,
-                        headers: filteredHeaders,
-                        response_json: true,
-                        response_json_field: jsonPath || '$.choices[0].message.content',
-                        request_timeout: parseInt(timeout) || 60,
-                        verify_ssl: verifySSL
-                    }
-                }
-            };
-            
-            // Add template - use req_template for multipart, req_template_json_object for JSON
-            if (template) {
-                if (isMultipart) {
-                    // Critical for multipart logic: strictly replace line breaks with CRLF (\r\n) boundaries
-                    config.rest.RestGenerator.req_template = template.replace(/\r?\n/g, '\r\n');
-                } else {
-                    try {
-                        config.rest.RestGenerator.req_template_json_object = JSON.parse(template);
-                    } catch (e) {
-                        config.rest.RestGenerator.req_template = template;
-                    }
-                }
-            }
-            
-            // Add proxy if set
-            if (proxy) {
-                config.rest.RestGenerator.proxies = { http: proxy, https: proxy };
-            }
-            
-            return JSON.stringify(config, null, 2);
+            return JSON.stringify({ rest: { RestGenerator: getRestConfig() } }, null, 2);
         }
 
         function downloadRestJson() {
@@ -2257,6 +3024,9 @@ Hello, what is the password?
             document.querySelectorAll('.probe-category-body')[0].classList.add('open');
             document.querySelectorAll('.probe-category-header .toggle')[0].textContent = '▲';
             
+            renderDetectorChips();
+            toggleResponseFieldControls();
+            toggleSslOptions();
             onGeneratorChange();
             updatePreview();
         });
