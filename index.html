@@ -486,6 +486,13 @@
                                 <div class="scenario-desc">PAIR configuration of TAP for iterative jailbreak refinement</div>
                                 <div class="scenario-probes">tap.PAIR</div>
                             </div>
+                            <!-- Multi-Turn Attacker Suite -->
+                            <div class="scenario-card" onclick="selectScenario('multiturn_attacker')">
+                                <div class="scenario-icon">🔥</div>
+                                <div class="scenario-title">Multi-Turn Attacker Suite</div>
+                                <div class="scenario-desc">All probes requiring Attacker LLM: TAP, PAIR, GOATAttack, Tox, FITD - auto-enables Step 6</div>
+                                <div class="scenario-probes">tap.TAP, tap.PAIR, goat.GOATAttack, atkgen.Tox, fitd.FITD</div>
+                            </div>
                             <!-- Misleading -->
                             <div class="scenario-card" onclick="selectScenario('misleading')">
                                 <div class="scenario-icon">🧭</div>
@@ -1511,6 +1518,16 @@ Content-Type: application/json" oninput="updatePreview()"></textarea>
                             </ul>
                         </div>
 
+                        <div class="info-box purple" style="margin-top: 16px;" id="lmStudioNote">
+                            <h4>🖥️ Using LM Studio / OpenAI-Compatible Local Server?</h4>
+                            <p style="margin-bottom: 12px;">You must set a dummy API key before running Garak. LM Studio doesn't require a real key, but Garak expects one.</p>
+                            <p style="margin-bottom: 8px;"><strong>CMD (Command Prompt):</strong></p>
+                            <code style="display: block; background: var(--bg-primary); padding: 10px; border-radius: 6px; margin-bottom: 12px;">set OPENAICOMPATIBLE_API_KEY=lm-studio</code>
+                            <p style="margin-bottom: 8px;"><strong>PowerShell:</strong></p>
+                            <code style="display: block; background: var(--bg-primary); padding: 10px; border-radius: 6px; margin-bottom: 12px;">$env:OPENAICOMPATIBLE_API_KEY = "lm-studio"</code>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">Run this command in the same terminal window before running <code>garak --config</code>. Or set it permanently in Windows Environment Variables.</p>
+                        </div>
+
                         <div class="nav-buttons">
                             <button class="btn btn-secondary" onclick="goToStep(8)">← Back</button>
                             <div></div>
@@ -1866,7 +1883,8 @@ run:
             'test': ['test'],
             'pair': ['pair'],
             'misleading': ['misleading'],
-            'badchars': ['badchars']
+            'badchars': ['badchars'],
+            'multiturn_attacker': ['tap.TAP', 'tap.PAIR', 'goat.GOATAttack', 'atkgen.Tox', 'fitd.FITD']
         };
 
         const detectorOptionGroups = [
@@ -1988,6 +2006,7 @@ run:
             
             if (step === 9) {
                 updateStats();
+                updateLmStudioNote();
             }
             
             updatePreview();
@@ -2004,10 +2023,23 @@ run:
             // Pre-select probes based on scenario
             state.selectedProbes = [...(scenarioProbes[scenario] || [])];
             
+            // Mapping from full probe names to chip data-probe values
+            const fullNameToChipName = {
+                'tap.TAP': 'tap',
+                'tap.PAIR': 'pair',
+                'goat.GOATAttack': 'goat',
+                'atkgen.Tox': 'atkgen',
+                'fitd.FITD': 'fitd'
+            };
+            
             // Update probe chips
             document.querySelectorAll('.probe-chip[data-probe]').forEach(chip => {
                 const probe = chip.dataset.probe;
-                if (state.selectedProbes.includes(probe) || state.selectedProbes.includes('all')) {
+                // Check direct match, 'all', or if any full name maps to this chip
+                const isSelected = state.selectedProbes.includes(probe) || 
+                                   state.selectedProbes.includes('all') ||
+                                   state.selectedProbes.some(p => fullNameToChipName[p] === probe);
+                if (isSelected) {
                     chip.classList.add('selected');
                 } else {
                     chip.classList.remove('selected');
@@ -2063,7 +2095,8 @@ run:
                 'test': 'Internal Test Probe',
                 'pair': 'PAIR Jailbreak',
                 'misleading': 'Misleading Claims',
-                'badchars': 'Bad Characters'
+                'badchars': 'Bad Characters',
+                'multiturn_attacker': 'Multi-Turn Attacker Suite'
             };
             document.getElementById('selectedScenarioName').textContent = scenarioNames[state.scenario] || 'Custom';
         }
@@ -2071,7 +2104,10 @@ run:
         function normalizeSelectedProbeSpec(probes) {
             const probeMap = {
                 tap: 'tap.TAP',
-                pair: 'tap.PAIR'
+                pair: 'tap.PAIR',
+                goat: 'goat.GOATAttack',
+                atkgen: 'atkgen.Tox',
+                fitd: 'fitd.FITD'
             };
 
             return (probes || []).map(probe => probeMap[probe] || probe).join(',');
@@ -2462,12 +2498,23 @@ Hello, how can I help you today?`;
             chip.classList.toggle('selected');
             const probe = chip.dataset.probe;
             
+            // Mapping from chip data-probe to full probe names (only for tap module)
+            const chipNameToFullName = {
+                'tap': 'tap.TAP',
+                'pair': 'tap.PAIR',
+                'goat': 'goat.GOATAttack',
+                'atkgen': 'atkgen.Tox',
+                'fitd': 'fitd.FITD'
+            };
+            const fullName = chipNameToFullName[probe];
+            
             if (chip.classList.contains('selected')) {
-                if (!state.selectedProbes.includes(probe)) {
+                if (!state.selectedProbes.includes(probe) && (!fullName || !state.selectedProbes.includes(fullName))) {
                     state.selectedProbes.push(probe);
                 }
             } else {
-                state.selectedProbes = state.selectedProbes.filter(p => p !== probe);
+                // Remove both short name and full name if present
+                state.selectedProbes = state.selectedProbes.filter(p => p !== probe && p !== fullName);
             }
             
             // Remove 'all' if individual probes selected
@@ -2550,7 +2597,8 @@ Hello, how can I help you today?`;
         }
 
         function checkAttackerNeeded() {
-            const needsAttacker = ['tap', 'pair', 'goat', 'atkgen', 'fitd'].some(p => state.selectedProbes.includes(p));
+            const attackerProbes = ['tap', 'pair', 'goat', 'atkgen', 'fitd', 'multiturn_attacker', 'tap.TAP', 'tap.PAIR', 'goat.GOATAttack', 'atkgen.Tox', 'fitd.FITD'];
+            const needsAttacker = attackerProbes.some(p => state.selectedProbes.includes(p));
             document.getElementById('attackerNeededNote').classList.toggle('hidden', !needsAttacker);
             
             if (needsAttacker && !document.getElementById('enableAttacker').checked) {
@@ -2756,25 +2804,26 @@ Hello, how can I help you today?`;
                     config.plugins.probes = config.plugins.probes || {};
                     const tapProbeBase = getTapProbeConfigBase(attackerModelConfig, judgeModelConfig);
 
-                    if (state.selectedProbes.includes('tap') || state.selectedProbes.includes('pair')) {
+                    if (state.selectedProbes.includes('tap') || state.selectedProbes.includes('pair') || state.selectedProbes.includes('tap.TAP') || state.selectedProbes.includes('tap.PAIR')) {
                         config.plugins.probes.tap = config.plugins.probes.tap || {};
-                        if (state.selectedProbes.includes('tap')) {
+                        if (state.selectedProbes.includes('tap') || state.selectedProbes.includes('tap.TAP')) {
                             config.plugins.probes.tap.TAP = {
                                 attack_model_type: attackerType,
                                 attack_model_name: attackerModel,
                                 ...tapProbeBase
                             };
                         }
-                        if (state.selectedProbes.includes('pair')) {
+                        if (state.selectedProbes.includes('pair') || state.selectedProbes.includes('tap.PAIR')) {
                             config.plugins.probes.tap.PAIR = {
                                 attack_model_type: attackerType,
                                 attack_model_name: attackerModel,
-                                ...tapProbeBase
+                                ...tapProbeBase,
+                                n_streams: 2  // PAIR default
                             };
                         }
                     }
 
-                    if (state.selectedProbes.includes('goat')) {
+                    if (state.selectedProbes.includes('goat') || state.selectedProbes.includes('goat.GOATAttack')) {
                         config.plugins.probes.goat = {
                             GOATAttack: {
                                 red_team_model_type: attackerType,
@@ -2785,9 +2834,20 @@ Hello, how can I help you today?`;
                         };
                     }
 
-                    if (state.selectedProbes.includes('atkgen')) {
+                    if (state.selectedProbes.includes('atkgen') || state.selectedProbes.includes('atkgen.Tox')) {
                         config.plugins.probes.atkgen = {
                             Tox: {
+                                red_team_model_type: attackerType,
+                                red_team_model_name: attackerModel,
+                                red_team_model_config: attackerModelConfig,
+                                max_calls_per_conv: Number(document.getElementById('attackerMaxCalls').value) || 5
+                            }
+                        };
+                    }
+
+                    if (state.selectedProbes.includes('fitd') || state.selectedProbes.includes('fitd.FITD')) {
+                        config.plugins.probes.fitd = {
+                            FITD: {
                                 red_team_model_type: attackerType,
                                 red_team_model_name: attackerModel,
                                 red_team_model_config: attackerModelConfig,
@@ -2830,10 +2890,10 @@ Hello, how can I help you today?`;
                         }
                     };
 
-                    if (state.selectedProbes.includes('tap') || state.selectedProbes.includes('pair')) {
+                    if (state.selectedProbes.includes('tap') || state.selectedProbes.includes('pair') || state.selectedProbes.includes('tap.TAP') || state.selectedProbes.includes('tap.PAIR')) {
                         config.plugins.probes = config.plugins.probes || {};
                         config.plugins.probes.tap = config.plugins.probes.tap || {};
-                        if (state.selectedProbes.includes('tap')) {
+                        if (state.selectedProbes.includes('tap') || state.selectedProbes.includes('tap.TAP')) {
                             config.plugins.probes.tap.TAP = {
                                 ...(config.plugins.probes.tap.TAP || {}),
                                 evaluator_model_type: judgeType,
@@ -2841,7 +2901,7 @@ Hello, how can I help you today?`;
                                 evaluator_model_config: judgeModelConfig
                             };
                         }
-                        if (state.selectedProbes.includes('pair')) {
+                        if (state.selectedProbes.includes('pair') || state.selectedProbes.includes('tap.PAIR')) {
                             config.plugins.probes.tap.PAIR = {
                                 ...(config.plugins.probes.tap.PAIR || {}),
                                 evaluator_model_type: judgeType,
@@ -2890,6 +2950,37 @@ Hello, how can I help you today?`;
                 if (jsonSection) jsonSection.style.display = 'none';
                 if (jsonBtn) jsonBtn.style.display = 'none';
             }
+            
+            // Update LM Studio note visibility
+            updateLmStudioNote();
+        }
+        
+        function updateLmStudioNote() {
+            const lmStudioNote = document.getElementById('lmStudioNote');
+            if (!lmStudioNote) return;
+            
+            const targetGen = document.getElementById('targetGenerator').value || '';
+            const attackerType = document.getElementById('attackerType')?.value || '';
+            const judgeType = document.getElementById('judgeType')?.value || '';
+            const attackerEnabled = document.getElementById('enableAttacker')?.checked || false;
+            const judgeEnabled = document.getElementById('enableJudge')?.checked || false;
+            
+            // Check if selected probes require attacker LLM
+            const attackerProbes = ['tap', 'pair', 'goat', 'atkgen', 'fitd', 'tap.TAP', 'tap.PAIR', 'goat.GOATAttack', 'atkgen.Tox', 'fitd.FITD'];
+            const needsAttacker = state.selectedProbes && attackerProbes.some(p => 
+                state.selectedProbes.some(selected => selected.toLowerCase().includes(p.toLowerCase()))
+            );
+            
+            // Show note if using OpenAICompatible anywhere OR if attacker probes selected
+            const usesOpenAICompatible = 
+                targetGen.includes('OpenAICompatible') ||
+                (attackerEnabled && attackerType.includes('OpenAICompatible')) ||
+                (judgeEnabled && judgeType.includes('OpenAICompatible'));
+            
+            // Show if attacker/judge enabled OR if probes need attacker
+            const usesLocalServer = attackerEnabled || judgeEnabled || needsAttacker;
+            
+            lmStudioNote.style.display = (usesOpenAICompatible || usesLocalServer) ? 'block' : 'none';
         }
 
         function generateCommand() {
@@ -2946,6 +3037,9 @@ Hello, how can I help you today?`;
             if (jsonBtn) {
                 jsonBtn.style.display = gen === 'rest' ? 'inline-block' : 'none';
             }
+            
+            // Show/hide LM Studio note
+            updateLmStudioNote();
         }
 
         // ==========================================
